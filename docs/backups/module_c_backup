@@ -1,0 +1,64 @@
+/*
+ * modules.c
+ *
+ *  Created on: Aug 2, 2018
+ *      Author: host
+ */
+
+#include "modules.h"
+
+object_functions_str object_table_function[] =  {
+    {
+        0,
+        "SIMPLE",
+        simple_createobject,
+        simple_deleteobject,
+        simple_printobject,
+        simple_writeobject,
+        simple_readobject,
+        simple_copyobject
+    },
+    {
+        1,
+        "ASSEMBLER",
+        assembler_createobject,
+        assembler_deleteobject,
+        assembler_printobject,
+        assembler_writeobject,
+        assembler_readobject,
+        assembler_copyobject
+    },
+    {
+        2,
+        "OSAKA_STRING",
+        osaka_string_createobject,
+        osaka_string_deleteobject,
+        osaka_string_printobject,
+        osaka_string_writeobject,
+        osaka_string_readobject,
+        osaka_string_copyobject
+    },
+    {
+        3,
+        "AUTOGEN_TEST",
+        autogen_test_createobject,
+        autogen_test_deleteobject,
+        autogen_test_printobject,
+        autogen_test_writeobject,
+        autogen_test_readobject,
+        autogen_test_copyobject
+    },
+    {
+        -1,
+        "TERMINATOR",
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    }
+};
+
+uint32_t MAXTYPE=4;
+

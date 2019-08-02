@@ -1,0 +1,54 @@
+{    
+    "object": {
+        "name": "binary_up_to_512"
+    },
+    "params": [
+        {
+            "name": "number",
+            "type": "uint32_t",
+            "macro_name": "my_number",
+            "has_valid_values" : "false"
+        },
+        {
+            "name": "binary",
+            "type": "uint32_t",
+            "macro_name": "my_binary",
+            "has_valid_values" : "true",
+            "values" : [
+                {
+                    "value": 0
+                },
+                {
+                    "value": 1
+                },
+                {
+                    "value": 2
+                },
+                {
+                    "value": 4
+                }, 
+                {
+                    "value": 8
+                }, 
+                {
+                    "value": 16
+                }, 
+                {
+                    "value": 32
+                }, 
+                {
+                    "value": 64
+                }, 
+                {
+                    "value": 128
+                }, 
+                {
+                    "value": 256
+                }, 
+                {
+                    "value": 512
+                }
+            ] 
+        }
+    ]
+}

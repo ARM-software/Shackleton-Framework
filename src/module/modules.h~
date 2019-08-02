@@ -1,0 +1,29 @@
+/*
+ * modules.h
+ *
+ *  Created on: Aug 2, 2018
+ *      Author: host
+ */
+
+#ifndef MODULE_MODULES_H_
+#define MODULE_MODULES_H_
+
+#include "simple.h"
+
+typedef struct
+{
+uint32_t object_type;
+char name[25];
+void *(*osaka_createobject)(void);
+void (*osaka_deleteobject)(void *);
+void (*osaka_printobject)(void *);
+void (*osaka_writeobject)(FILE *stream,void *);
+void *(*osaka_readobject)(FILE *stream);
+} object_functions_str;
+
+extern object_functions_str object_table_function[];
+
+extern uint32_t MAXTYPE;
+
+
+#endif /* MODULE_MODULES_H_ */

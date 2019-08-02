@@ -1,0 +1,5 @@
+# Ignore any metdata from valgrind runs
+vgcore.*
+
+# Ignore vscode config files
+.vscode/

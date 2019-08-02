@@ -1,0 +1,269 @@
+/*
+ ============================================================================
+ Name        : fitness.h
+ Author      : Hannah M. Peeler
+ Version     :
+ Copyright   : Your copyright notice
+ Description : Main and helper functions for determining the fitness
+               of an individual and using that fitness value within
+               the evolution process
+ ============================================================================
+ */
+
+#include <stdbool.h>
+
+#include "../osaka/osaka.h"
+
+uint32_t (*fpfitness_simple)(node_str *n, bool vis);
+uint32_t (*fpfitness_assembler)(node_str *n, bool vis);
+uint32_t (*fpfitness_osaka_string)(node_str *n, bool vis);
+uint32_t (*fpfitness_autogen_test)(node_str *n, bool vis);
+uint32_t (*fpfitness_llvm_pass)(node_str *n, bool vis);
+uint32_t (*fpfitness_binary_up_to_512)(node_str *n, bool vis);
+
+/*
+ * NAME
+ *
+ *   fitness_simple
+ *
+ * DESCRIPTION
+ *
+ *  Calculates the fitness value specifically for a simple
+ *  individual, currently is only a default
+ *
+ * PARAMETERS
+ *
+ *  node_str* indiv - the individual that is to be evaluated
+ *  bool vis - whether or not visualization is enabled
+ *
+ * RETURN
+ *
+ *  uint32_t - the fitness value for indiv
+ *
+ * EXAMPLE
+ *
+ * uint32_t simple_fit = fitness_simple(node, true);
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+uint32_t fitness_simple(node_str* indiv, bool vis);
+
+/*
+ * NAME
+ *
+ *   fitness_assembler
+ *
+ * DESCRIPTION
+ *
+ *  Calculates the fitness value specifically for an assembler
+ *  individual, currently is only a default
+ *
+ * PARAMETERS
+ *
+ *  node_str* indiv - the individual that is to be evaluated
+ *  bool vis - whether or not visualization is enabled
+ *
+ * RETURN
+ *
+ *  uint32_t - the fitness value for indiv
+ *
+ * EXAMPLE
+ *
+ * uint32_t assembler_fit = fitness_assembler(node, true);
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+uint32_t fitness_assembler(node_str* indiv, bool vis);
+
+/*
+ * NAME
+ *
+ *   fitness_osaka_string
+ *
+ * DESCRIPTION
+ *
+ *  Calculates the fitness value specifically for an osaka_string
+ *  individual, currently is only a default
+ *
+ * PARAMETERS
+ *
+ *  node_str* indiv - the individual that is to be evaluated
+ *  bool vis - whether or not visualization is enabled
+ *
+ * RETURN
+ *
+ *  uint32_t - the fitness value for indiv
+ *
+ * EXAMPLE
+ *
+ * uint32_t osaka_string_fit = fitness_osaka_string(node, true);
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+uint32_t fitness_osaka_string(node_str* indiv, bool vis);
+
+/*
+ * NAME
+ *
+ *   fitness_autogen_test
+ *
+ * DESCRIPTION
+ *
+ *  Calculates the fitness value specifically for an autogen_test
+ *  individual, currently is only a default
+ *
+ * PARAMETERS
+ *
+ *  node_str* indiv - the individual that is to be evaluated
+ *  bool vis - whether or not visualization is enabled
+ *
+ * RETURN
+ *
+ *  uint32_t - the fitness value for indiv
+ *
+ * EXAMPLE
+ *
+ * uint32_t autogen_test_fit = fitness_autogen_test(node, true);
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+uint32_t fitness_autogen_test(node_str* indiv, bool vis);
+
+/*
+ * NAME
+ *
+ *   fitness_llvm_pass
+ *
+ * DESCRIPTION
+ *
+ *  Calculates the fitness value specifically for an llvm pass
+ *  individual, based on the optimization of the code outputted
+ *
+ * PARAMETERS
+ *
+ *  node_str* indiv - the individual that is to be evaluated
+ *  bool vis - whether or not visualization is enabled
+ *
+ * RETURN
+ *
+ *  uint32_t - the fitness value for indiv
+ *
+ * EXAMPLE
+ *
+ * uint32_t llvm_pass_fit = fitness_llvm_pass(node, true);
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+uint32_t fitness_llvm_pass(node_str* indiv, bool vis);
+
+/*
+ * NAME
+ *
+ *   fitness_binary_up_to_512
+ *
+ * DESCRIPTION
+ *
+ *  Calculates the fitness value specifically for a binary_up_to_512
+ *  individual, currently is only a default
+ *
+ * PARAMETERS
+ *
+ *  node_str* indiv - the individual that is to be evaluated
+ *  bool vis - whether or not visualization is enabled
+ *
+ * RETURN
+ *
+ *  uint32_t - the fitness value for indiv
+ *
+ * EXAMPLE
+ *
+ * uint32_t binary_up_to_512_fit = fitness_binary_up_to_512(node, true);
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+uint32_t fitness_binary_up_to_512(node_str* indiv, bool vis);
+
+/*
+ * NAME
+ *
+ *   fitness
+ *
+ * DESCRIPTION
+ *
+ *  Applies the correct fitness function based on the
+ *  specific object type of the individual
+ *
+ * PARAMETERS
+ *
+ *  node_str* indiv - the individual that is to be evaluated
+ *  bool vis - whether or not visualization is enabled
+ *
+ * RETURN
+ *
+ *  uint32_t - the fitness value for indiv
+ *
+ * EXAMPLE
+ *
+ * uint32_t fitness = fitness(node, true);
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+uint32_t fitness(node_str* indiv, bool vis);
+
+/*
+ * NAME
+ *
+ *   fitness_setup
+ *
+ * DESCRIPTION
+ *
+ *  initializes all typdefs for function pointers to their
+ *  respective methods in fitness.h
+ *
+ * PARAMETERS
+ *
+ *  none
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * fitness_setup();
+ *
+ * SIDE-EFFECT
+ *
+ * alters the typedefs
+ *
+ */
+
+void fitness_setup();

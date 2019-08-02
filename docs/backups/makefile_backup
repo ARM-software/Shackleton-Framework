@@ -1,0 +1,43 @@
+
+SRCDIR := .
+
+OBJDIR := obj
+OBJS := $(addprefix $(OBJDIR)/,main.o osaka.o modules.o simple.o osaka_test.o assembler.o osaka_string.o evolution.o crossover.o mutation.o)
+
+osaka : $(OBJS)
+	cc -o shackleton $(OBJS)
+	cp shackleton $(SRCDIR)/bin/init
+
+
+$(OBJDIR)/main.o : $(SRCDIR)/main.c
+	cc -c $? -o $@
+
+$(OBJDIR)/osaka.o : $(SRCDIR)/osaka/osaka.c $(SRCDIR)/osaka/osaka.h 
+	cc -c $(SRCDIR)/osaka/osaka.c -o $@
+
+$(OBJDIR)/osaka_test.o : $(SRCDIR)/osaka/osaka_test.c $(SRCDIR)/osaka/osaka_test.h 
+	cc -c $(SRCDIR)/osaka/osaka_test.c -o $@ 	
+	
+$(OBJDIR)/modules.o : $(SRCDIR)/module/modules.c $(SRCDIR)/module/modules.h
+	cc -c $(SRCDIR)/module/modules.c -o $@ 
+
+$(OBJDIR)/simple.o : $(SRCDIR)/module/simple.c $(SRCDIR)/module/simple.h
+	cc -c $(SRCDIR)/module/simple.c -o $@ 
+
+$(OBJDIR)/assembler.o : $(SRCDIR)/module/assembler.c $(SRCDIR)/module/assembler.h
+	cc -c $(SRCDIR)/module/assembler.c -o $@ 
+
+$(OBJDIR)/osaka_string.o : $(SRCDIR)/module/osaka_string.c $(SRCDIR)/module/osaka_string.h
+	cc -c $(SRCDIR)/module/osaka_string.c -o $@ 
+
+$(OBJDIR)/evolution.o : $(SRCDIR)/evolution/evolution.c $(SRCDIR)/evolution/evolution.h
+	cc -c $(SRCDIR)/evolution/evolution.c -o $@ 
+
+$(OBJDIR)/crossover.o : $(SRCDIR)/evolution/crossover.c $(SRCDIR)/evolution/crossover.h
+	cc -c $(SRCDIR)/evolution/crossover.c -o $@ 
+
+$(OBJDIR)/mutation.o : $(SRCDIR)/evolution/mutation.c $(SRCDIR)/evolution/mutation.h
+	cc -c $(SRCDIR)/evolution/mutation.c -o $@ 
+
+clean :
+	rm $(OBJS)

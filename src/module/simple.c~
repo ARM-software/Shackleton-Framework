@@ -1,0 +1,72 @@
+/*
+ * simple.c
+ *
+ *  Created on: Aug 2, 2018
+ *      Author: host
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <assert.h>
+
+#include "../osaka.h"
+#include "simple.h"
+
+uint32_t simple_uid(void)
+{
+static uint32_t uid=0;
+
+return ++uid;
+}
+
+object_simple_str *simple_createobject(void)
+{
+object_simple_str *o;
+
+o = malloc(sizeof(object_simple_str));
+
+assert(o!=NULL);
+
+SUBTYPE(o) = 1;
+INTEGER(o) = simple_uid();
+
+return o;
+}
+
+void simple_printobject(object_simple_str *o)
+{
+printf("   subtype: %d\n",SUBTYPE(o));
+printf("   integer: %d\n",INTEGER(o));
+}
+
+void simple_deleteobject(object_simple_str *s)
+{
+assert(s!=NULL);
+
+free(s);
+}
+
+void simple_writeobject(FILE *stream,object_simple_str *o)
+{
+assert(stream!=NULL);
+
+fwrite(o,sizeof(object_simple_str),1,stream);
+}
+
+object_simple_str *simple_readobject(FILE *stream)
+{
+object_simple_str *o;
+
+assert(stream!=NULL);
+
+o=malloc(sizeof(object_simple_str));
+assert(o!=NULL);
+
+fread(o,sizeof(object_simple_str),1,stream);
+
+return o;
+}
+
+
+

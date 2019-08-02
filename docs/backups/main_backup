@@ -1,0 +1,123 @@
+/*
+ ================================================================================
+ Name        : main.c
+ Author      : Hannah M. Peeler
+ Version     :
+ Copyright   : Your copyright notice
+ Description : Rough framework for inputting evolutionary
+                             parameters for genetic programming
+ ================================================================================
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+#include "src/module/modules.h"
+#include "src/support/test.h"
+
+// Modules that are only included if test.h is not included
+//#include "osaka/osaka.h"
+//#include "evolution/evolution.h"
+//#include "evolution/generation.h"
+
+uint32_t main(uint32_t argc, char* argv[]) {
+
+    printf("\n--------------------------------------------------------- Launching Project Shackleton ---------------------------------------------------------\n\n\n");
+
+    printf("Welcome to the Shackleton Framework tool, a generic genetic programming framework that enables easier experimentation for linear genetic programming\n" 
+                 "for a large range of different use cases. This framework's goal is to be a valuable tool for both established researchers in the genetic algorithms\n"
+                 "field and for novices exploring the area for the first time. Before launching fully, here are the default parameters for evolution:\n\n");
+
+    uint32_t num_generations = 10;
+    uint32_t num_population_size = 20;
+    uint32_t percent_crossover = 75;
+    uint32_t percent_mutation = 20;
+    uint32_t tournament_size = 2;
+    bool visualization = false;
+
+    // variables that are only used for llvm optimization
+    char main_code[50];
+    char tests[50];
+
+    // Core arg parsing ---------------------------------------------------------------
+
+    if (argc >= 2) {
+        uint32_t curr = 1;
+        if (strcmp(argv[curr], "-parameters_file") == 0) {
+            printf("Using a parameters file has been chosen, any changes to parameters will be taken from the src/files/parameters.txt\n\n");
+        }
+    }
+    else {
+        if (argc == 1) {
+            printf("No additional arguments passed, default values used\n");
+        }
+        if (argc >= 2) {
+            uint32_t curr = 1;
+            while (curr < argc) {
+                if (strcmp(argv[curr], "-generations") == 0) {
+                    str2int(&num_generations, argv[curr + 1], 10);
+                }
+                else if (strcmp(argv[curr], "-population_size") == 0) {
+                    str2int(&num_population_size, argv[curr + 1], 10);
+                }
+                else if (strcmp(argv[curr], "-crossover") == 0) {
+                    str2int(&percent_crossover, argv[curr + 1], 10);
+                }
+                else if (strcmp(argv[curr], "-mutation") == 0) {
+                    str2int(&percent_mutation, argv[curr + 1], 10);
+                }
+                else if (strcmp(argv[curr], "-tournament_size") == 0) {
+                    str2int(&tournament_size, argv[curr + 1], 10);
+                }
+                else if (strcmp(argv[curr], "-visualization") == 0) {
+                    visualization = true;
+                    curr = curr - 1;
+                }
+                else if (strcmp(argv[curr], "-llvm-optimize") == 0) {
+                    printf("You are going to optimize your code with evolutionary compute. What file will you be optimizing?\n");
+                    fgets(main_code, 50, stdin);
+                    main_code[strcspn(main_code, "\n")] = 0;
+                    printf("The file you will be optimizing is %s. What tests will be used to verify its behavior?\n", main_code);
+                    fgets(tests, 50, stdin);
+                    tests[strcspn(tests, "\n")] = 0;
+                    printf("The test file you will be using is %s. Beginning optimization now.\n\n", tests);
+                    curr = curr - 1;
+                }
+                else {
+                    printf("\nArgument '%s' not recognized. List of valid arguments:\n", argv[curr]);
+                    printf("-generations <int>\t// the max number of generations created during the evolutionary process\n");
+                    printf("-population_size <int>\t// the size of each generation\n");
+                    printf("-crossover <int>\t// the percent chance of crossover, <int>/100 is the final percentage\n");
+                    printf("-mutation <int>\t\t// the percent chance of mutation, <int>/100 is the final percentage\n");
+                    printf("-visualization\t\t// whether or not visualization is enabled, if the flag is present it is set to true, otherwise false\n");
+                    printf("\nAborting.\n\n");
+                    return 0;
+                }
+                curr = curr + 2;
+            }
+        }
+
+        // --------------------------------------------------------------------------------
+
+    }
+
+    // Initializing vars --------------------------------------------------------------
+
+    uint32_t temp = 0;
+    srand(time(0));
+
+    // --------------------------------------------------------------------------------
+
+    // Tests --------------------------------------------------------------------------
+
+    //test_master(num_generations, num_population_size, 20, tournament_size, percent_mutation, percent_crossover, LLVM_PASS, visualization);
+
+    // --------------------------------------------------------------------------------
+
+    printf("\n------------------------------------------------------ Run of Project Shackleton complete ------------------------------------------------------\n\n");
+
+    return 0;
+
+}

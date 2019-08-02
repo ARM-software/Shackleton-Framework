@@ -1,0 +1,40 @@
+/*
+ * simple.h
+ *
+ *  Created on: Aug 2, 2018
+ *      Author: host
+ */
+
+#ifndef MODULE_SIMPLE_H_
+#define MODULE_SIMPLE_H_
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <assert.h>
+
+#include "../osaka.h"
+
+typedef struct object_simple_str
+{
+uint32_t subtype;
+uint32_t i;
+} object_assembler_str;
+
+#define SUBTYPE(s) s->subtype
+#define INTEGER(s) s->i
+
+object_simple_str *assembler_createobject(void);
+
+void assembler_printobject(object_simple_str *o);
+
+void assembler_deleteobject(object_simple_str *o);
+
+
+void assembler_writeobject(FILE *stream,object_simple_str *o);
+
+void *assembler_readobject(FILE *stream);
+
+void *assembler_copyobject(object_simple_str *o);
+
+#endif /* MODULE_SIMPLE_H_ */

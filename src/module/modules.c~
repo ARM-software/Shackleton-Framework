@@ -1,0 +1,29 @@
+/*
+ * modules.c
+ *
+ *  Created on: Aug 2, 2018
+ *      Author: host
+ */
+
+#include "modules.h"
+
+object_functions_str object_table_function[] =
+{
+0,
+  "SIMPLE",
+  simple_createobject,
+  simple_deleteobject,
+  simple_printobject,
+  simple_writeobject,
+  simple_readobject,
+-1,
+  "TERMINATOR",
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL
+};
+
+uint32_t MAXTYPE=1;
+

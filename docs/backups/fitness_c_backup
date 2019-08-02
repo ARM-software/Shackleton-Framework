@@ -1,0 +1,347 @@
+/*
+ ============================================================================
+ Name        : fitness.c
+ Author      : Hannah M. Peeler
+ Version     :
+ Copyright   : Your copyright notice
+ Description : Main and helper functions for determining the fitness
+               of an individual and using that fitness value within
+               the evolution process
+ ============================================================================
+ */
+
+#include "fitness.h"
+
+/*
+ * NAME
+ *
+ *   fitness_simple
+ *
+ * DESCRIPTION
+ *
+ *  Calculates the fitness value specifically for a simple
+ *  individual, currently is only a default
+ *
+ * PARAMETERS
+ *
+ *  node_str* indiv - the individual that is to be evaluated
+ *  bool vis - whether or not visualization is enabled
+ *
+ * RETURN
+ *
+ *  uint32_t - the fitness value for indiv
+ *
+ * EXAMPLE
+ *
+ * uint32_t simple_fit = fitness_simple(node, true);
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+uint32_t fitness_simple(node_str* indiv, bool vis) {
+
+    return 100;
+
+}
+
+/*
+ * NAME
+ *
+ *   fitness_assembler
+ *
+ * DESCRIPTION
+ *
+ *  Calculates the fitness value specifically for an assembler
+ *  individual, currently is only a default
+ *
+ * PARAMETERS
+ *
+ *  node_str* indiv - the individual that is to be evaluated
+ *  bool vis - whether or not visualization is enabled
+ *
+ * RETURN
+ *
+ *  uint32_t - the fitness value for indiv
+ *
+ * EXAMPLE
+ *
+ * uint32_t assembler_fit = fitness_assembler(node, true);
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+uint32_t fitness_assembler(node_str* indiv, bool vis) {
+
+    return 100;
+
+}
+
+/*
+ * NAME
+ *
+ *   fitness_osaka_string
+ *
+ * DESCRIPTION
+ *
+ *  Calculates the fitness value specifically for an osaka_string
+ *  individual, currently is only a default
+ *
+ * PARAMETERS
+ *
+ *  node_str* indiv - the individual that is to be evaluated
+ *  bool vis - whether or not visualization is enabled
+ *
+ * RETURN
+ *
+ *  uint32_t - the fitness value for indiv
+ *
+ * EXAMPLE
+ *
+ * uint32_t osaka_string_fit = fitness_osaka_string(node, true);
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+uint32_t fitness_osaka_string(node_str* indiv, bool vis) {
+
+    return 100;
+
+}
+
+/*
+ * NAME
+ *
+ *   fitness_autogen_test
+ *
+ * DESCRIPTION
+ *
+ *  Calculates the fitness value specifically for an autogen_test
+ *  individual, currently is only a default
+ *
+ * PARAMETERS
+ *
+ *  node_str* indiv - the individual that is to be evaluated
+ *  bool vis - whether or not visualization is enabled
+ *
+ * RETURN
+ *
+ *  uint32_t - the fitness value for indiv
+ *
+ * EXAMPLE
+ *
+ * uint32_t autogen_test_fit = fitness_autogen_test(node, true);
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+uint32_t fitness_autogen_test(node_str* indiv, bool vis) {
+
+    return 100;
+
+}
+
+/*
+ * NAME
+ *
+ *   fitness_llvm_pass
+ *
+ * DESCRIPTION
+ *
+ *  Calculates the fitness value specifically for an llvm pass
+ *  individual, based on the optimization of the code outputted
+ *
+ * PARAMETERS
+ *
+ *  node_str* indiv - the individual that is to be evaluated
+ *  bool vis - whether or not visualization is enabled
+ *
+ * RETURN
+ *
+ *  uint32_t - the fitness value for indiv
+ *
+ * EXAMPLE
+ *
+ * uint32_t llvm_pass_fit = fitness_llvm_pass(node, true);
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+uint32_t fitness_llvm_pass(node_str* indiv, bool vis) {
+
+    uint32_t fitness = 0;
+
+    if (vis) {
+
+        printf("Calculating fitness of individual\n");
+
+    }
+
+    while (NEXT(indiv) != NULL) {
+
+        object_llvm_pass_str* pass = (object_llvm_pass_str*)OBJECT(indiv);
+        char* value = PASS(pass);
+
+        if (vis) {
+
+            printf("Value of node is %s, in node %d\n", value, UID(indiv));
+
+        }
+
+        if (strstr(value, "-basicaa") != NULL) { fitness = fitness + 1; }
+        else if (strstr(value, "-count-aa") != NULL) { fitness = fitness + 2; }
+        else if (strstr(value, "-da") != NULL) { fitness = fitness + 3; }
+        else if (strstr(value, "-globalsmodref-aa") != NULL) { fitness = fitness + 4; }
+        else if (strstr(value, "-instrcount") != NULL) { fitness = fitness + 5; }
+        else if (strstr(value, "-stack-safety") != NULL) { fitness = fitness + 6; }
+        else if (strstr(value, "-adce") != NULL) { fitness = fitness + 7; }
+        else if (strstr(value, "-always-inline") != NULL) { fitness = fitness + 8; }
+        else if (strstr(value, "-argpromotion") != NULL) { fitness = fitness + 9; }
+        else if (strstr(value, "-bb-vectorize") != NULL) { fitness = fitness + 10; }
+        else if (strstr(value, "-constmerge") != NULL) { fitness = fitness + 11; }
+        else if (strstr(value, "-constprop") != NULL) { fitness = fitness + 12; }
+        else if (strstr(value, "-dce") != NULL) { fitness = fitness + 13; }
+        else if (strstr(value, "-die") != NULL) { fitness = fitness + 14; }
+        else if (strstr(value, "-dse") != NULL) { fitness = fitness + 15; }
+        else if (strstr(value, "-globaldce") != NULL) { fitness = fitness + 16; }
+        else if (strstr(value, "-gvn") != NULL) { fitness = fitness + 17; }
+        else if (strstr(value, "-indvars") != NULL) { fitness = fitness + 18; }
+        else if (strstr(value, "-inline") != NULL) { fitness = fitness + 19; }
+        else if (strstr(value, "-internalize") != NULL) { fitness = fitness + 20; }
+        else if (strstr(value, "-jump-threading") != NULL) { fitness = fitness + 21; }
+        else if (strstr(value, "-lcssa") != NULL) { fitness = fitness + 22; }
+        else if (strstr(value, "-loop-deletion") != NULL) { fitness = fitness + 23; }
+        else if (strstr(value, "-loop-reduce") != NULL) { fitness = fitness + 24; }
+        else if (strstr(value, "-loop-rotate") != NULL) { fitness = fitness + 25; }
+        else if (strstr(value, "-loop-unroll") != NULL) { fitness = fitness + 26; }
+        else if (strstr(value, "-loop-unroll-and-jam") != NULL) { fitness = fitness + 27; }
+        else if (strstr(value, "-mergefunc") != NULL) { fitness = fitness + 28; }
+        else if (strstr(value, "-mergereturn") != NULL) { fitness = fitness + 29; }
+        else if (strstr(value, "-prune-eh") != NULL) { fitness = fitness + 30; }
+        else if (strstr(value, "-reassociate") != NULL) { fitness = fitness + 31; }
+        else if (strstr(value, "-reg2mem") != NULL) { fitness = fitness + 32; }
+        else if (strstr(value, "-sccp") != NULL) { fitness = fitness + 33; }
+        else if (strstr(value, "-sink") != NULL) { fitness = fitness + 34; }
+        else if (strstr(value, "-strip") != NULL) { fitness = fitness + 35; }
+        else if (strstr(value, "-strip-dead-debug-info") != NULL) { fitness = fitness + 36; }
+        else if (strstr(value, "-stripdebug-declare") != NULL) { fitness = fitness + 37; }
+
+        indiv = NEXT(indiv);
+
+    }
+    
+    if (vis) {
+
+        printf("Final fitness for this individual is %d\n\n", fitness);
+
+    }
+
+    return fitness;
+
+}
+
+/*
+ * NAME
+ *
+ *   fitness_top
+ *
+ * DESCRIPTION
+ *
+ *  Applies the correct fitness function based on the
+ *  specific object type of the individual
+ *
+ * PARAMETERS
+ *
+ *  node_str* indiv - the individual that is to be evaluated
+ *  bool vis - whether or not visualization is enabled
+ *
+ * RETURN
+ *
+ *  uint32_t - the fitness value for indiv
+ *
+ * EXAMPLE
+ *
+ * uint32_t fitness = fitness_top(node, true);
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+uint32_t fitness_top(node_str* indiv, bool vis) {
+
+    osaka_object_typ type = OBJECT_TYPE(indiv);
+
+    if (type == 0) {
+        return fitness_simple(indiv, vis);
+    }
+    else if (type == 1) {
+        return fitness_assembler(indiv, vis);
+    }
+    else if (type == 2) {
+        return fitness_osaka_string(indiv, vis);
+    }
+    else if (type == 3) {
+        return fitness_autogen_test(indiv, vis);
+    }
+    else if (type == 4) {
+        return fitness_llvm_pass(indiv, vis);
+    }
+    else {
+        return 100;
+    }
+
+}
+
+/*
+ * NAME
+ *
+ *   fitness_setup
+ *
+ * DESCRIPTION
+ *
+ *  initializes all typdefs for function pointers to their
+ *  respective methods in fitness.h
+ *
+ * PARAMETERS
+ *
+ *  none
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * fitness_setup();
+ *
+ * SIDE-EFFECT
+ *
+ * alters the typedefs
+ *
+ */
+
+void fitness_setup() {
+
+    fpfitness_simple = &fitness_simple;
+    fpfitness_assembler = &fitness_assembler;
+    fpfitness_osaka_string = &fitness_osaka_string;
+    fpfitness_autogen_test = &fitness_autogen_test;
+    fpfitness_llvm_pass = &fitness_llvm_pass;
+
+}

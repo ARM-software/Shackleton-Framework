@@ -1,0 +1,96 @@
+/*
+ * simple.c
+ *
+ *  Created on: Aug 2, 2018
+ *      Author: host
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <assert.h>
+
+#include "../assembler.h"
+#include "assembler.h"
+
+uint32_t assembler_uid(void)
+{
+static uint32_t uid=0;
+
+return ++uid;
+}
+
+char *instruction_string[] =
+{
+"
+
+char *assember_instruction_string(instruction_typ i)
+{
+return instruction_string[i];
+}
+
+
+object_simple_str *assembler_createobject(void)
+{
+object_simple_str *o;
+
+o = malloc(sizeof(object_assembler_str));
+
+assert(o!=NULL);
+
+srand(time(0));
+
+ASSEMBLER_INSTRUCTION(o)= rand() % MAXINSTRUCTIONS;
+
+
+return o;
+}
+
+void assembler_printobject(object_simple_str *o)
+{
+printf("   subtype: %d\n",SUBTYPE(o));
+printf("   integer: %d\n",INTEGER(o));
+}
+
+void assembler_deleteobject(object_simple_str *s)
+{
+assert(s!=NULL);
+
+free(s);
+}
+
+void assembler_writeobject(FILE *stream,object_simple_str *o)
+{
+assert(stream!=NULL);
+
+fwrite(o,sizeof(object_simple_str),1,stream);
+}
+
+void *assembler_readobject(FILE *stream)
+{
+object_simple_str *o;
+
+assert(stream!=NULL);
+
+o=malloc(sizeof(object_simple_str));
+assert(o!=NULL);
+
+fread(o,sizeof(object_simple_str),1,stream);
+
+return o;
+}
+
+void *assembler_copyobject(object_simple_str *o)
+{
+object_simple_str *c;
+
+
+c=malloc(sizeof(object_simple_str));
+assert(c!=NULL);
+
+memcpy((void *)c,(void *)o,sizeof(object_simple_str));
+
+return c;
+}
+
+
