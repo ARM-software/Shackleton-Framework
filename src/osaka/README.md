@@ -1,3 +1,5 @@
+# The Osaka List Structure (OLS)
+
 Osaka is our name for the generic genetic object (GGO) that represents what will be evolved in the bulk of the process in Shackleton. Any access to data values ultimately passes through the osaka structure, and running a piece of code amounts to executing an osaka structure from head to tail.
 
 The osaka structure is a doubly linked list of node_str objects, which contains the following items:
