@@ -1,4 +1,4 @@
-**Project Shackleton**
+# Project Shackleton
 
 ![alt text](img/shackleton.jpg "The Endurance")
 
@@ -38,7 +38,7 @@ LPG solves problems that are sequential.  This is useful for optimizing programs
 
 --------
 
-**Requirements for use, Installation Instructions**
+# Requirements for use, Installation Instructions
 
 Shackleton comes in the form of a code repository that can be made and then run from the command line using the "make" command and then run with the call "./shackleton". The tool can be run with a number of available flags, listed here with their descriptions:
 
