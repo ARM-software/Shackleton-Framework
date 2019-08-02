@@ -21,7 +21,6 @@
 *  Broken into a module design with specific methods of communication
 *  Each module can be developed independently providing the I/O rules are adhered-to
 *  Designed to be run in hosted (x86) or native, in continuous or fixed fashion
-*  Optimized purposely as for ARM only hardware
 
 **Genetic Programming**
 
