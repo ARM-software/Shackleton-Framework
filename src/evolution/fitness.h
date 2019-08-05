@@ -48,7 +48,7 @@
 uint32_t (*fpfitness_simple)(node_str *n, bool vis);
 uint32_t (*fpfitness_assembler)(node_str *n, bool vis);
 uint32_t (*fpfitness_osaka_string)(node_str *n, bool vis);
-uint32_t (*fpfitness_llvm_pass)(node_str *n, char* file, bool vis);
+uint32_t (*fpfitness_llvm_pass)(node_str *n, char* file, bool vis, bool cache, char* cache_file);
 uint32_t (*fpfitness_binary_up_to_512)(node_str *n, bool vis);
 
 /*
@@ -177,7 +177,7 @@ uint32_t fitness_osaka_string(node_str* indiv, bool vis);
  *
  */
 
-uint32_t fitness_llvm_pass(node_str* indiv, char* file, bool vis);
+uint32_t fitness_llvm_pass(node_str* indiv, char* file, bool vis, bool cache, char* cache_file);
 
 /*
  * NAME
@@ -239,7 +239,7 @@ uint32_t fitness_binary_up_to_512(node_str* indiv, bool vis);
  *
  */
 
-uint32_t fitness_top(node_str* indiv, bool vis, char* test_file);
+uint32_t fitness_top(node_str* indiv, bool vis, char* test_file, bool cache, char* cache_file);
 
 /*
  * NAME

@@ -173,7 +173,7 @@ uint32_t fitness_osaka_string(node_str* indiv, bool vis) {
  *
  */
 
-uint32_t fitness_llvm_pass(node_str* indiv, char* file, bool vis) {
+uint32_t fitness_llvm_pass(node_str* indiv, char* file, bool vis, bool cache, char* cache_file) {
 
     uint32_t fitness = 100;
 
@@ -233,7 +233,20 @@ uint32_t fitness_llvm_pass(node_str* indiv, char* file, bool vis) {
     printf("Run command took %f seconds to run\n\n", time_taken);
     fitness = time_taken;
     if (result > 0) {
+
         fitness = UINT32_MAX;
+    
+    }
+
+    if (cache) {
+
+        char string[52];
+        strcpy(string, "This is a test description file for this individual");
+
+        FILE* file_ptr = fopen(cache_file, "w");
+        fputs(string, file_ptr);
+        fclose(file_ptr);
+
     }
 
     return fitness;
@@ -303,7 +316,7 @@ uint32_t fitness_binary_up_to_512(node_str* indiv, bool vis) {
  *
  */
 
-uint32_t fitness_top(node_str* indiv, bool vis, char* test_file) {
+uint32_t fitness_top(node_str* indiv, bool vis, char* test_file, bool cache, char* cache_file) {
 
     osaka_object_typ type = OBJECT_TYPE(indiv);
 
@@ -317,7 +330,7 @@ uint32_t fitness_top(node_str* indiv, bool vis, char* test_file) {
         return fitness_osaka_string(indiv, vis);
     }
     else if (type == 3) {
-        return fitness_llvm_pass(indiv, test_file, vis);
+        return fitness_llvm_pass(indiv, test_file, vis, cache, cache_file);
     }
 	else if (type == 4) {
 		return fitness_binary_up_to_512(indiv, vis);

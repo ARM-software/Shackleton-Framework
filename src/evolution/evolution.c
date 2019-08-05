@@ -504,6 +504,33 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
 
         }
 
+        if (cache) {
+
+            for (int i = 0; i < pop_size; i++) {
+
+                char directory_name[70];
+                char generation_num[4];
+                char individual_num[4];
+
+                sprintf(generation_num, "%d", g);
+                sprintf(individual_num, "%d", i);
+
+                strcpy(directory_name, main_folder);
+                strcat(directory_name, "/generation_");
+                strcat(directory_name, generation_num);
+
+                char cache_file[100];
+                strcpy(cache_file, directory_name);
+                strcat(cache_file, "/individual");
+                strcat(cache_file, individual_num);
+                strcat(cache_file, ".txt");
+
+                fitness_top(current_generation[i], vis, file, true, cache_file);
+
+            }
+
+        }
+
         if (vis) {
 
             printf("-------------------------------- End of Generation %d --------------------------------\n\n", g + 1);

@@ -212,7 +212,7 @@ uint32_t selection_tournament(node_str** population, node_str* result, uint32_t 
 
     for (uint32_t c = 0; c < tournament_size; c++) {
 
-        fitness_values[c] = fitness_top(population[fitness_indices[c]], vis, file);
+        fitness_values[c] = fitness_top(population[fitness_indices[c]], vis, file, false, NULL);
 
         // update which is the current best out of those chosen thus far
         if (selection_compare_fitness(fitness_values[c], max_fitness, type)) {
