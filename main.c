@@ -69,7 +69,7 @@ uint32_t main(uint32_t argc, char* argv[]) {
                 printf("\t-help\t\t\t: What got you to these statements! Offers information on inputs to the command line interface for this tool.\n");
                 printf("\t-parameters_file\t: Specifies that an input file at src/files/parameters.txt will be used to change some of the parameters for evolution.\n");
                 printf("\t-test\t\t\t: Enables the testing script for Shackleton to be run. Will be run regardless of other parameters specified.\n");
-                printf("\t-llvm_optimize\t\t: Specifies that the LLVm integrated portion of the tool will be used to optimize LLVM using evolution.\n\t\t\t\t  This option automatically sets the object type needed to LLVM_PASS\n");
+                printf("\t-llvm_optimize\t\t: Specifies that the LLVM integrated portion of the tool will be used to optimize LLVM using evolution.\n\t\t\t\t  This option automatically sets the object type needed to LLVM_PASS\n");
                 printf("\t-cache\t\t\t: Caches information for each evolutionary run into files. This means something different depending on the object type being used.\n\n");
                 printf("The Shackleton framework has a set number of object types available to evolve. If you would like to use different types than the ones listed below,"
                             " you can use the Editor tool found at src/editor_tool to add new object types. Please follow the instructions for using that tool given in the"
