@@ -390,6 +390,36 @@ void osaka_printnode_concise(node_str *n);
 /*
  * NAME
  *
+ *  osaka_describenode
+ *
+ * DESCRIPTION
+ *
+ *  This function loads a char* variable with a description of the value of the node
+ *
+ * PARAMETERS
+ *
+ *  char* desc - variable to load the description into
+ *  node_str *n - node to be described
+ *
+ * RETURN
+ *
+ *  none...
+ *
+ * EXAMPLE
+ *
+ *  osaka_describenode(output, n);
+ *
+ * SIDE-EFFECT
+ *
+ *  changes the value of desc
+ *
+ */
+
+void osaka_describenode(char* desc, node_str *n);
+
+/*
+ * NAME
+ *
  *  osaka_printnodearray
  *
  * DESCRIPTION

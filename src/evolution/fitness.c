@@ -175,7 +175,7 @@ uint32_t fitness_osaka_string(node_str* indiv, bool vis) {
 
 uint32_t fitness_llvm_pass(node_str* indiv, char* file, bool vis, bool cache, char* cache_file) {
 
-    uint32_t fitness = 100;
+    double fitness = 100.0;
 
     char file_name[30];
     char base_name[60];
@@ -240,8 +240,27 @@ uint32_t fitness_llvm_pass(node_str* indiv, char* file, bool vis, bool cache, ch
 
     if (cache) {
 
-        char string[52];
-        strcpy(string, "This is a test description file for this individual");
+        char string[10000];
+        char fitness_num[100];
+        
+        strcpy(string, "Description file for Individual 1\n\nHere are the passes in this individual, in order:\n\n");
+        sprintf(fitness_num, "%f", fitness);
+
+        while (NEXT(indiv) != NULL) {
+            char desc[60];
+            strcpy(desc, "");
+            osaka_describenode(desc, indiv);
+            strcat(string, desc);
+            strcat(string, "\n");
+            indiv = NEXT(indiv);
+        }
+
+        char desc[60];
+        strcpy(desc, "");
+        osaka_describenode(desc, indiv);
+        strcat(string, desc);
+        strcat(string, "\n\nThe fitness of the individual is the time it takes to complete the testing script provided in seconds. Lower fitness is better.\n\nFitness of this individual: ");
+        strcat(string, fitness_num);
 
         FILE* file_ptr = fopen(cache_file, "w");
         fputs(string, file_ptr);

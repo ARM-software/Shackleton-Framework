@@ -54,7 +54,7 @@ typedef struct object_functions_str {
     void (*osaka_writeobject)(FILE *stream,void *);
     void *(*osaka_readobject)(FILE *stream);
     void *(*osaka_copyobject)(void *);
-    //void (*osaka_describeobject)(char *, void *);         // Will be used for caching functionality, WIP
+    void (*osaka_describeobject)(char *, void *);         // Will be used for caching functionality, WIP
 } object_functions_str;
 
 /*

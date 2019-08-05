@@ -48,7 +48,7 @@ object_functions_str object_table_function[] =  {
         simple_writeobject,
         simple_readobject,
         simple_copyobject,
-        //simple_describeobject,            // will be used in cache update, WIP
+        simple_describeobject,            // will be used in cache update, WIP
     },
     {
         1,
@@ -60,7 +60,7 @@ object_functions_str object_table_function[] =  {
         assembler_writeobject,
         assembler_readobject,
         assembler_copyobject,
-        //assembler_describeobject,         // will be used in cache update, WIP
+        assembler_describeobject,         // will be used in cache update, WIP
     },
     {
         2,
@@ -72,7 +72,7 @@ object_functions_str object_table_function[] =  {
         osaka_string_writeobject,
         osaka_string_readobject,
         osaka_string_copyobject,
-        //osaka_string_describeobject,      // will be used in cache update, WIP
+        osaka_string_describeobject,      // will be used in cache update, WIP
     },
     {
         3,
@@ -84,7 +84,7 @@ object_functions_str object_table_function[] =  {
         llvm_pass_writeobject,
         llvm_pass_readobject,
         llvm_pass_copyobject,
-        //llvm_pass_describeobject,         // will be used in cache update, WIP
+        llvm_pass_describeobject,         // will be used in cache update, WIP
     },
 	{
 		4,
@@ -96,7 +96,7 @@ object_functions_str object_table_function[] =  {
 		binary_up_to_512_writeobject,
 		binary_up_to_512_readobject,
 		binary_up_to_512_copyobject,
-        //binary_up_to_512_describeobject,  // will be used in cache update, WIP
+        binary_up_to_512_describeobject,  // will be used in cache update, WIP
 	},
     {
         -1,
@@ -108,7 +108,7 @@ object_functions_str object_table_function[] =  {
         NULL,
         NULL,
         NULL,
-        //NULL,                             // will be used in cache update, WIP
+        NULL,                             // will be used in cache update, WIP
     }
 };
 

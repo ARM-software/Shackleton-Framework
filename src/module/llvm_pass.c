@@ -183,7 +183,6 @@ void llvm_pass_printobject(object_llvm_pass_str *o)   {
 
 void llvm_pass_describeobject(char* desc, object_llvm_pass_str *o) {
 
-    strcpy(desc, "pass : ");
     strcat(desc, PASS(o));
 
 }
