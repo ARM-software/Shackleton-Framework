@@ -506,18 +506,20 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
 
         if (cache) {
 
+            char directory_name[70];
+            char generation_num[4];
+
+            sprintf(generation_num, "%d", g);
+
+            strcpy(directory_name, main_folder);
+            strcat(directory_name, "/generation_");
+            strcat(directory_name, generation_num);
+
             for (int i = 0; i < pop_size; i++) {
 
-                char directory_name[70];
-                char generation_num[4];
                 char individual_num[4];
 
-                sprintf(generation_num, "%d", g);
                 sprintf(individual_num, "%d", i);
-
-                strcpy(directory_name, main_folder);
-                strcat(directory_name, "/generation_");
-                strcat(directory_name, generation_num);
 
                 char cache_file[100];
                 strcpy(cache_file, directory_name);
@@ -528,6 +530,21 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
                 fitness_top(current_generation[i], vis, file, true, cache_file);
 
             }
+
+            char best_file[100];
+            strcpy(best_file, directory_name);
+            strcat(best_file, "/best_individual.txt");
+
+            node_str* winner_node = NULL;
+            uint32_t winner = 0;
+
+            winner = selection_tournament(current_generation, winner_node, pop_size, pop_size, vis, file);
+
+            double my_fitness = fitness_top(current_generation[winner], false, file, false, NULL);
+
+            printf("Best fitness is %f", my_fitness);
+
+            fitness_llvm_pass_indiv_file(my_fitness, current_generation[winner], best_file);
 
         }
 

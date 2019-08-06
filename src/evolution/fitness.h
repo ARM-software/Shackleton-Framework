@@ -48,7 +48,7 @@
 uint32_t (*fpfitness_simple)(node_str *n, bool vis);
 uint32_t (*fpfitness_assembler)(node_str *n, bool vis);
 uint32_t (*fpfitness_osaka_string)(node_str *n, bool vis);
-uint32_t (*fpfitness_llvm_pass)(node_str *n, char* file, bool vis, bool cache, char* cache_file);
+double (*fpfitness_llvm_pass)(node_str *n, char* file, bool vis, bool cache, char* cache_file);
 uint32_t (*fpfitness_binary_up_to_512)(node_str *n, bool vis);
 
 /*
@@ -151,6 +151,39 @@ uint32_t fitness_osaka_string(node_str* indiv, bool vis);
 /*
  * NAME
  *
+ *   fitness_llvm_pass_indiv_file
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes an individual along with their fitness
+ *
+ * PARAMETERS
+ *
+ *  double fitness - the fitness of the individual in question
+ *  node_str* indiv - the individual that is to be evaluated
+ *  char* cache_file - the file that will hold the outputted information
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (cache) {
+ *     fitness_llvm_pass_indiv_file(fit, indiv, cache_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_llvm_pass_indiv_file(double fitness, node_str* indiv, char* cache_file);
+
+/*
+ * NAME
+ *
  *   fitness_llvm_pass
  *
  * DESCRIPTION
@@ -165,19 +198,19 @@ uint32_t fitness_osaka_string(node_str* indiv, bool vis);
  *
  * RETURN
  *
- *  uint32_t - the fitness value for indiv
+ *  double - the fitness value for indiv
  *
  * EXAMPLE
  *
- * uint32_t llvm_pass_fit = fitness_llvm_pass(node, true);
+ *  double llvm_pass_fit = fitness_llvm_pass(node, true);
  *
  * SIDE-EFFECT
  *
- * none
+ *  none
  *
  */
 
-uint32_t fitness_llvm_pass(node_str* indiv, char* file, bool vis, bool cache, char* cache_file);
+double fitness_llvm_pass(node_str* indiv, char* file, bool vis, bool cache, char* cache_file);
 
 /*
  * NAME
@@ -213,7 +246,6 @@ uint32_t fitness_binary_up_to_512(node_str* indiv, bool vis);
 /*
  * NAME
  *
- *   fitness_top
  *
  * DESCRIPTION
  *
@@ -227,19 +259,19 @@ uint32_t fitness_binary_up_to_512(node_str* indiv, bool vis);
  *
  * RETURN
  *
- *  uint32_t - the fitness value for indiv
+ *  double - the fitness value for indiv
  *
  * EXAMPLE
  *
- * uint32_t fitness = fitness_top(node, true);
+ *  double fitness = fitness_top(node, true);
  *
  * SIDE-EFFECT
  *
- * none
+ *  none
  *
  */
 
-uint32_t fitness_top(node_str* indiv, bool vis, char* test_file, bool cache, char* cache_file);
+double fitness_top(node_str* indiv, bool vis, char* test_file, bool cache, char* cache_file);
 
 /*
  * NAME

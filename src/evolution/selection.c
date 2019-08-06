@@ -180,7 +180,7 @@ uint32_t selection_tournament(node_str** population, node_str* result, uint32_t 
 
     uint32_t fitness_values[tournament_size];
     uint32_t fitness_indices[tournament_size];
-    uint32_t max_fitness = 0;
+    double max_fitness = 0;
     uint32_t max_fitness_ind = -1;
     bool repeat_index = false;
     uint32_t num_chosen = 0;
