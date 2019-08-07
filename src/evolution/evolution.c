@@ -41,6 +41,53 @@
 /*
  * NAME
  *
+ *   evolution_create_new_gen_folder
+ *
+ * DESCRIPTION
+ *
+ *  For an evolutionary run, creates a new generation folder
+ *  that will hold all cached data if caching is enabled
+ *
+ * PARAMETERS
+ *
+ *  char* main_folder - has the base folder path that the new folder will be added to
+ *  uint32_t gen - the generation number for this directory
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ *  evolution_create_new_gen_folder(3);
+ *
+ * SIDE-EFFECT
+ *
+ *  none
+ *
+ */
+
+void evolution_create_new_gen_folder(char* main_folder, uint32_t gen) {
+
+    char new_directory_name[70];
+    char new_directory[80];
+    char generation_num[4];
+
+    strcpy(new_directory_name, main_folder);
+    strcat(new_directory_name, "/generation_");
+    sprintf(generation_num, "%d", gen);
+    strcat(new_directory_name, generation_num);
+
+    strcpy(new_directory, "mkdir ");
+    strcat(new_directory, new_directory_name);
+
+    system(new_directory);
+
+}
+
+/*
+ * NAME
+ *
  *   evolution_basic_crossover_and_mutation
  *
  * DESCRIPTION
@@ -102,9 +149,15 @@ node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
 
     node_str* current_generation[pop_size];
     node_str* copy_gen[pop_size];
+    double fitness_values[pop_size];
     generate_new_generation(current_generation, pop_size, indiv_size, ot);
 
-    if (vis) {
+    // calculate initial fitness values for the current generation
+    for (uint32_t k = 0; k < pop_size; k++) {
+        fitness_values[k] = fitness_top(current_generation[k], false, file, false, NULL);
+    }
+
+    /*if (vis) {
 
         for (int i = 0; i < pop_size; i++) {
         
@@ -114,7 +167,7 @@ node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
 
         }
 
-    }
+    }*/
 
     for (uint32_t g = 0; g < num_gens; g++) {
 
@@ -136,12 +189,12 @@ node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
 
             }
 
-            contestant1_ind = selection_tournament(copy_gen, contestant1, copy_size, tourn_size, vis, file);
-            contestant2_ind = selection_tournament(copy_gen, contestant2, copy_size, tourn_size, vis, file);
+            contestant1_ind = selection_tournament(copy_gen, fitness_values, contestant1, copy_size, tourn_size, vis, file);
+            contestant2_ind = selection_tournament(copy_gen, fitness_values, contestant2, copy_size, tourn_size, vis, file);
 
             // contestants cannot be the same individual, the indices must be different
             while (contestant1_ind == contestant2_ind) {
-                contestant2_ind = selection_tournament(copy_gen, contestant2, copy_size, tourn_size, vis, file);
+                contestant2_ind = selection_tournament(copy_gen, fitness_values, contestant2, copy_size, tourn_size, vis, file);
             }
 
             // swap if contestant1 comes before contestant2, swap so deletion order is correct
@@ -155,12 +208,12 @@ node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
             contestant1 = copy_gen[contestant1_ind];
             contestant2 = copy_gen[contestant2_ind];
 
-            if (vis) {
+            /*if (vis) {
 
                 printf("Contestant 1 starts at node %d\n", UID(contestant1));
                 printf("Contestant 2 starts at node %d\n\n", UID(contestant2));
 
-            }
+            }*/
 
             temp_crossover = (uint32_t) (100 * (rand() / (RAND_MAX + 1.0)));
             temp_mutation1 = (uint32_t) (100 * (rand() / (RAND_MAX + 1.0)));
@@ -205,7 +258,12 @@ node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
 
         }
 
-        if (vis) {
+        // recalculate fitness values for the current generation
+        for (uint32_t k = 0; k < pop_size; k++) {
+            fitness_values[k] = fitness_top(current_generation[k], false, file, false, NULL);
+        }
+
+        /*if (vis) {
 
             for (int i = 0; i < pop_size; i++) {
         
@@ -215,13 +273,9 @@ node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
 
             }
 
-        }
-
-        if (vis) {
-
             printf("-------------------------------- End of Generation %d --------------------------------\n\n", g + 1);
 
-        }
+        }*/
 
     }
 
@@ -357,7 +411,13 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
 
     node_str* current_generation[pop_size];
     node_str* copy_gen[pop_size];
+    double fitness_values[pop_size];
     generate_new_generation(current_generation, pop_size, indiv_size, ot);
+
+    // calculate initial fitness values for the current generation
+    for (uint32_t k = 0; k < pop_size; k++) {
+        fitness_values[k] = fitness_top(current_generation[k], false, file, false, NULL);
+    }
 
     if (vis) {
 
@@ -374,39 +434,11 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
     for (uint32_t g = 0; g < num_gens; g++) {
 
         if (vis) {
-
             printf("----------------------------------- Generation %d -----------------------------------\n\n", g + 1);
-
         }
 
         if (cache) {
-            char new_directory_name[70];
-            char new_directory[80];
-            char generation_num[4];
-            strcpy(new_directory_name, main_folder);
-            strcat(new_directory_name, "/generation_");
-            sprintf(generation_num, "%d", g);
-            strcat(new_directory_name, generation_num);
-
-            strcpy(new_directory, "mkdir ");
-            strcat(new_directory, new_directory_name);
-
-            system(new_directory);
-
-            char text_file[100];
-            strcpy(text_file, new_directory_name);
-            strcat(text_file, "/generation");
-            strcat(text_file, generation_num);
-            strcat(text_file, ".txt");
-
-            char string[52];
-            strcpy(string, "This is a test description file for this generation");
-
-            printf("\n\n%s\n\n", text_file);
-            FILE* file_ptr = fopen(text_file, "w");
-            fputs(string, file_ptr);
-            fclose(file_ptr);
-
+            evolution_create_new_gen_folder(main_folder, g);
         }
 
         // at the start of every generation, copy over the last generation
@@ -416,17 +448,15 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
         for (uint32_t p = 0; p < (pop_size / 2); p++) {
 
             if (vis) {
-
                 printf("---------------------------- Iteration %d of Generation %d ----------------------------\n\n", p + 1, g + 1);
-
             }
 
-            contestant1_ind = selection_tournament(copy_gen, contestant1, copy_size, tourn_size, vis, file);
-            contestant2_ind = selection_tournament(copy_gen, contestant2, copy_size, tourn_size, vis, file);
+            contestant1_ind = selection_tournament(copy_gen, fitness_values, contestant1, copy_size, tourn_size, vis, file);
+            contestant2_ind = selection_tournament(copy_gen, fitness_values, contestant2, copy_size, tourn_size, vis, file);
 
             // contestants cannot be the same individual, the indices must be different
             while (contestant1_ind == contestant2_ind) {
-                contestant2_ind = selection_tournament(copy_gen, contestant2, copy_size, tourn_size, vis, file);
+                contestant2_ind = selection_tournament(copy_gen, fitness_values, contestant2, copy_size, tourn_size, vis, file);
             }
 
             // swap if contestant1 comes before contestant2, swap so deletion order is correct
@@ -441,19 +471,13 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
             contestant2 = copy_gen[contestant2_ind];
 
             if (vis) {
-
                 printf("Contestant 1 starts at node %d\n", UID(contestant1));
                 printf("Contestant 2 starts at node %d\n\n", UID(contestant2));
-
             }
 
             temp_crossover = (uint32_t) (100 * (rand() / (RAND_MAX + 1.0)));
             temp_mutation1 = (uint32_t) (100 * (rand() / (RAND_MAX + 1.0)));
             temp_mutation2 = (uint32_t) (100 * (rand() / (RAND_MAX + 1.0)));
-
-            //printf("temp_crossover for this iteration: %d\n", temp_crossover);
-            //printf("temp_mutation1 for this iteration: %d\n", temp_mutation1);
-            //printf("temp_mutation2 for this iteration: %d\n", temp_mutation2);
 
             // random numbers are used to decide if the crossover or mutation operators will be used with a certain probability
             if (temp_crossover <= cross_perc) {
@@ -476,18 +500,15 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
             current_generation[p] = osaka_copylist(contestant1);
             current_generation[p + (pop_size / 2)] = osaka_copylist(contestant2);
 
-            // remove the individuals from the copied generation
-            //generate_free_individual_inside_array(copy_gen, copy_size, contestant1_ind, contestant1);
-            //generate_free_individual_inside_array(copy_gen, copy_size - 1, contestant2_ind, contestant2);
-
-            //copy_size = copy_size - 2;
-
             if (vis) {
-
                 printf("\n-------------- End of Iteration %d of Generation %d, copy_size is now %d ---------------\n\n", p + 1, g + 1, copy_size);
-
             }
 
+        }
+
+        // refresh fitness values for the current_generation
+        for (uint32_t k = 0; k < pop_size; k++) {
+            fitness_values[k] = fitness_top(current_generation[k], false, file, false, NULL);
         }
 
         generate_free_generation(copy_gen, copy_size);
@@ -495,11 +516,9 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
         if (vis) {
 
             for (int i = 0; i < pop_size; i++) {
-        
                 printf("------------------- Printing Individual %d at end of Generation %d --------------------\n\n", i + 1, g + 1);
                 visualization_print_individual_concise_details(current_generation[i]);
                 printf("\n\n");
-
             }
 
         }
@@ -535,23 +554,24 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
             strcpy(best_file, directory_name);
             strcat(best_file, "/best_individual.txt");
 
-            node_str* winner_node = NULL;
             uint32_t winner = 0;
+            double winner_value = fitness_values[0];
 
-            winner = selection_tournament(current_generation, winner_node, pop_size, pop_size, vis, file);
+            for (uint32_t j = 1; j < pop_size; j++) {
+                if (selection_compare_fitness(fitness_values[j], winner_value, ot)) {
+                    winner = j;
+                    winner_value = fitness_values[j];
+                }
+            }
 
-            double my_fitness = fitness_top(current_generation[winner], false, file, false, NULL);
+            printf("\nBest fitness is that of individual %d : %f\n\n", winner, winner_value);
 
-            printf("Best fitness is %f", my_fitness);
-
-            fitness_llvm_pass_indiv_file(my_fitness, current_generation[winner], best_file);
+            fitness_llvm_pass_indiv_file(winner_value, current_generation[winner], best_file);
 
         }
 
         if (vis) {
-
             printf("-------------------------------- End of Generation %d --------------------------------\n\n", g + 1);
-
         }
 
     }
@@ -561,11 +581,9 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
     final_node = osaka_copylist(best_node);
 
     if (vis) {
-        
         printf("Best node: ---------------------------------------------------------------------------\n\n");
         visualization_print_individual_concise_details(final_node);
         printf("\n\n--------------------------------------------------------------------------------------\n\n");
-
     }
 
     // always free the generation at the end

@@ -3,12 +3,12 @@ source_filename = "llvm-link"
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
-@T = local_unnamed_addr global [3 x [3 x i32]] [[3 x i32] [i32 1, i32 2, i32 3], [3 x i32] [i32 2, i32 4, i32 6], [3 x i32] [i32 -5, i32 6, i32 1]], align 16
+@T = global [3 x [3 x i32]] [[3 x i32] [i32 1, i32 2, i32 3], [3 x i32] [i32 2, i32 4, i32 6], [3 x i32] [i32 -5, i32 6, i32 1]], align 16
 @0 = private unnamed_addr constant [2 x i8] c"\0A\00", align 1
 @1 = private unnamed_addr constant [15 x i8] c"%d + %d = %d?\0A\00", align 1
 
 ; Function Attrs: noinline norecurse optnone uwtable
-define i32 @main() local_unnamed_addr #0 {
+define i32 @main() #0 {
   %1 = alloca i32, align 4
   %2 = alloca i32, align 4
   %3 = alloca i32, align 4
@@ -75,13 +75,13 @@ define i32 @main() local_unnamed_addr #0 {
   ret i32 %46
 }
 
-declare i32 @printf(i8*, ...) local_unnamed_addr #1
+declare i32 @printf(i8*, ...) #1
 
 ; Function Attrs: noreturn nounwind
-declare void @exit(i32) local_unnamed_addr #2
+declare void @exit(i32) #2
 
 ; Function Attrs: noinline nounwind optnone uwtable
-define i32 @_Z3addii(i32, i32) local_unnamed_addr #3 {
+define i32 @_Z3addii(i32, i32) #3 {
   %3 = alloca i32, align 4
   %4 = alloca i32, align 4
   store i32 %0, i32* %3, align 4

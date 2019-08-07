@@ -228,6 +228,7 @@ void fitness_llvm_pass_indiv_file(double fitness, node_str* indiv, char* cache_f
     strcat(string, "\n\n###########################################################################################################################");*/
     strcat(string, "\n\nThe fitness of the individual is the time it takes to complete the testing script provided in seconds after the specified optimization passes are applied. Lower fitness is better.\n\nFitness of this individual: ");
     strcat(string, fitness_num);
+    strcat(string, " sec");
 
     FILE* file_ptr = fopen(cache_file, "w");
     fputs(string, file_ptr);

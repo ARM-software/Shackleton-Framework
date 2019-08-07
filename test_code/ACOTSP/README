@@ -1,0 +1,297 @@
+
+       AAAA    CCCC   OOOO   TTTTTT   SSSSS  PPPPP
+      AA  AA  CC     OO  OO    TT    SS      PP  PP
+      AAAAAA  CC     OO  OO    TT     SSSS   PPPPP
+      AA  AA  CC     OO  OO    TT        SS  PP
+      AA  AA   CCCC   OOOO     TT    SSSSS   PP
+
+######################################################
+##########    ACO algorithms for the TSP    ##########
+######################################################
+
+      Version: 1.0
+      Author:  Thomas Stuetzle
+      Copyright (c) Thomas Stuetzle, 2002
+
+
+This is the README file to the software package ACOTSP.
+
+This software package was developed by Thomas Stuetzle in connection
+with the Book 
+
+[DorStu04] Marco Dorigo and Thomas Stuetzle, "Ant Colony
+Optimization", MIT Press, Cambridge, MA, USA, 2004.
+
+The software package is freely available subject to the 
+GNU General Public Licence, which is included in file gpl.txt.
+
+If you use ACOTSP in your research, I would appreciate a citation in
+your publication(s). Please cite it as
+
+Thomas Stuetzle. ACOTSP, Version 1.0. Available from
+http://www.aco-metaheuristic.org/aco-code, 2004.
+
+This software package provides an implementation of various Ant Colony
+Optimization (ACO) algorithms for the symmetric Traveling
+Salesman Problem (TSP). The ACO algorithms implemented are Ant System,
+Elitist Ant System, MAX-MIN Ant System, Rank-based version of Ant
+System, Best-Worst Ant System, and Ant Colony System. This is Version
+1.0 of ACOTSP; it is in large part identical to the software used to
+produce the results in [DorStu04], but it has been slightly adapted to
+make the code more readable, more comments were added, and a new
+command line parser was generated with opag.
+
+AIMS OF THE SOFTWARE: This software was developed to have one common
+code for the various known ACO algorithms that were at some point
+applied to the TSP in the literature. The software tries to provide a
+reasonably efficient implementation of these ACO algorithms while at
+the same time aiming for readability and understandability of the
+code.
+
+
+=========
+CONTENTS
+=========
+
+
+The GNU General Public Licence:
+gpl.txt
+
+The main control routines, main:
+acotsp.c
+
+Procedures to implement the ants behaviour:
+ants.c
+ants.h
+
+Input / output / statistics routines:
+InOut.c
+InOut.h
+
+Procedures specific to the TSP:
+TSP.c
+TSP.h
+
+Local search procedures:
+ls.c
+ls.h
+
+Additional useful / helping procedure:
+utilities.c
+utilities.h
+
+Command line parser:
+parse.c
+parse.h
+
+Time measurement:
+timer.c (you only need this one)
+timer.h (and this one)
+dos_timer.c (same as timer.c)
+dos_timer.h (same as timer.c)
+unix_timer.c (in case you want to use rusage instead, use this one)
+unix_timer.h (in case you want to use rusage instead, use this one)
+
+Makefile
+
+Instances: 
+  Some problem instances from TSPLIB: eil51.tsp kroA100.tsp d198.tsp
+  lin318.tsp pcb442.tsp att532.tsp rat783.tsp pcb1173.tsp d1291.tsp
+  pr2392.tsp. Other TSP instances are available from TSPLIB, the
+  webpage for the 8th DIMACS Implementation Challenge on the TSP
+  (http://www.research.att.com/~dsj/chtsp/) or the webpage on "Solving
+  TSP"
+
+
+=====
+Code
+=====
+
+
+The software was developed in ANSI C under Linux, using the GNU 2.95.3
+gcc compiler and extensively tested in this environment. The software
+is distributed as a gzipped tar file.
+
+To install the code, first obtain the file ACOTSP.V1.0.tar.gz. Unzip
+the file by typing
+
+gunzip ACOTSP.V1.0.tar.gz
+
+and then unpack it by typing 
+
+tar -xvf ACOTSP.V1.0.tar
+
+The software will unpack in a new folder ACOTSP.V1.0 
+
+To compile it under Linux just type 'make' and the executable 'acotsp'
+is produced.
+
+Note: The code is written in ANSI C. Hence, the code should be
+reasonable portable to other Operating Systems than Linux or Unix.
+
+
+======
+USAGE
+======
+
+
+Given the large number of ACO algorithms, also the number of command
+line options is relatively large.
+
+The default parameter settings are such, that MAX-MIN Ant System will
+be run using a 3-opt local search, using alpha = 1, beta = 2, rho =
+0.5 for a maximum of 10 seconds per each trial for 10 independent
+trials. (guess who developed MAX-MIN Ant System ;-)
+
+The executable 'acotsp' provides the following command line options
+(given are the short and the long options):
+
+-r, --tries          # number of independent trials
+-s, --tours          # number of steps in each trial
+-t, --time           # maximum time for each trial
+-i, --tsplibfile     f inputfile (TSPLIB format necessary)
+-o, --optimum        # stop if tour better or equal optimum is found
+-m, --ants           # number of ants
+-g, --nnants         # nearest neighbours in tour construction
+-a, --alpha          # alpha (influence of pheromone trails)
+-b, --beta           # beta (influence of heuristic information)
+-e, --rho            # rho: pheromone trail evaporation
+-q, --q0             # q_0: prob. of best choice in tour construction
+-c, --elitistants    # number of elitist ants
+-f, --rasranks       # number of ranks in rank-based Ant System
+-k, --nnls           # No. of nearest neighbors for local search
+-l, --localsearch    0: no local search   1: 2-opt   2: 2.5-opt   3: 3-opt
+-d, --dlb            1 use don't look bits in local search
+-u, --as               apply basic Ant System
+-v, --eas              apply elitist Ant System
+-w, --ras              apply rank-based version of Ant System
+-x, --mmas             apply MAX-MIN ant system
+-y, --bwas             apply best-worst ant system
+-z, --acs              apply ant colony system
+-h, --help             display the help text and exit
+
+Options -u --as, -v --eas, -w --ras, -x --mmas, -y --bwas, -z --acs,
+-h, --help don't need arguments, while all the others do.  
+
+A Mandatory option is only the option "-i, --tsplibfile". Here, mandatory
+means that without specifying this option, the program won't work,
+since there is no input file. 
+
+All the other options take some default values. The default values for
+these are:
+
+-r, --tries       : 10
+-s, --tours       : 100
+-t, --time        : 10 /* seconds */
+-o, --optimum     : 1
+-m, --ants        : 25
+-g, --nnants      : 20
+-a, --alpha       : 1
+-b, --beta        : 2
+-e, --rho         : 0.5
+-q, --q0          : 0.0
+-c, --elitistants : 100
+-f, --rasranks    : 6
+-k, --nnls        : 20
+-l, --localsearch : 3 /* use 3-opt */
+-d, --dlb         : 1 
+-u, --as          : 0
+-v, --eas         : 0
+-w, --ras         : 0 
+-x, --mmas        : 1 /* apply MAX-MIN Ant System */
+-y, --bwas        : 0
+-z, --acs         : 0
+
+
+The default settings imply that as default MAX-MIN Ant System is run
+using a 3-opt local search procedure. Please note that these default
+values do not really make sense for some of the algorithms (e.g.,
+typically an evaporation of 0.2 is recommended vor MAX-MIN Ant
+System); that is, for some of the algorithms the default parameter
+settings lead to poor performance (an example is ACS). Hence, when you
+use any of the ACO algorithms, make sure you set the appropriate
+parameter values. Typically, one may want to adjust the parameters
+
+-t, --time
+-o, --optimum
+-m, --ants
+-b, --beta
+-e, --rho 
+-q, --q0
+-l, --localsearch
+
+Note that only one option among -u --as, -v --eas, -w --ras,
+-x --mmas, -y --bwas, -z --acs, is to be specified.
+
+Examples for running an experiments are:
+
+./acotsp -i lin318.tsp -v -t 60. -o 42029 -m 50 -b 5
+
+or
+
+./acotsp --tsplibfile lin318.tsp --acs --rho 0.1 --q0 0.95 --time 60. --optimum 42029 --ants 10
+
+
+=======
+OUTPUT
+=======
+
+
+Every experiment produces three files. These files are 
+
+best.tsplibfilename
+cmp.tsplibfilename
+stat.tsplibfilename
+
+where tsplibfilename is the instance identifier of the instance under
+solution. 
+
+The most important of these is the file "cmp.tsplibfilename". This
+file starts with a specification of the parameter settings used to run
+the experiment. The section with the comprehensive experimental data
+starts with
+
+begin problem tsplibfilename
+
+Next the random number seed for the next trial is given
+
+Then, for each trial statistical information on the development of the
+best-so-far solution is given. Each section for a trial starts with
+
+begin try <trial_number>
+
+Then, each time the algorithm finds a new best solution a line 
+
+best <number>	 iteration <number>	 tours <number>	 time <number>
+
+is added, where "best" is the tour length of the best-so-far solution;
+iteration is the iteration number in which this solution is found;
+tours is the number of solutions constructed so far (typically this is
+simple iteration X n_ants); and time is the time at which a new
+best-so-far solution is found
+
+Each trial is ended by 
+
+end try <trial_number>
+
+Once all trials are run the line 
+
+end problem tsplibfilename
+
+is added to end the file. 
+
+The file  best.tsplibfilename
+
+collects the information about parameter settings, the best solution
+found in each trial, and some additional statistical information.
+
+The file stat.tsplibfilename 
+
+may be used for the output of statistical information on a trial as
+generated by the procedure population_statistics(); in InOut.c;
+however, it is not heavily used in ACOTSP V1.0. 
+
+Have fun, and if you have any comments please write to 
+
+stuetzle no@spam informatik.tu-darmstadt.de
+

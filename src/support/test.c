@@ -644,11 +644,16 @@ void test_selection_tournament(uint32_t pop_size, uint32_t indiv_size, uint32_t 
     }
 
     node_str* winner = NULL;
-
     uint32_t winner_ind = 0;
+    double fitness_values[pop_size];
 
     node_str* gen[pop_size];
     generate_new_generation(gen, pop_size, indiv_size, ot);
+
+    for (uint32_t k = 0; k < pop_size; k++) {
+        fitness_values[k] = fitness_top(gen[k], false, file, false, NULL);
+        printf("\n%f\n", fitness_values[k]);
+    }
 
     if (vis) {
         
@@ -664,7 +669,7 @@ void test_selection_tournament(uint32_t pop_size, uint32_t indiv_size, uint32_t 
 
     }    
 
-    winner_ind = selection_tournament(gen, winner, pop_size, tourn_size, vis, file);
+    winner_ind = selection_tournament(gen, fitness_values, winner, pop_size, tourn_size, vis, file);
     winner = gen[winner_ind];
 
     if (vis) {
@@ -738,15 +743,18 @@ void test_selection_tournament_multiple(uint32_t pop_size, uint32_t indiv_size, 
     uint32_t winner5_ind = 0;
 
     node_str* gen[pop_size];
+    double fitness_values[pop_size];
     generate_new_generation(gen, pop_size, indiv_size, ot);
 
-    printf("getting here");
+    for (uint32_t k = 0; k < pop_size; k++) {
+        fitness_values[k] = fitness_top(gen[k], false, file, false, NULL);
+    }
 
-    winner1_ind = selection_tournament(gen, winner1, pop_size, tourn_size, vis, file);
-    winner2_ind = selection_tournament(gen, winner2, pop_size, tourn_size, vis, file);
-    winner3_ind = selection_tournament(gen, winner3, pop_size, tourn_size, vis, file);
-    winner4_ind = selection_tournament(gen, winner4, pop_size, tourn_size, vis, file);
-    winner5_ind = selection_tournament(gen, winner5, pop_size, tourn_size, vis, file);
+    winner1_ind = selection_tournament(gen, fitness_values, winner1, pop_size, tourn_size, vis, file);
+    winner2_ind = selection_tournament(gen, fitness_values, winner2, pop_size, tourn_size, vis, file);
+    winner3_ind = selection_tournament(gen, fitness_values, winner3, pop_size, tourn_size, vis, file);
+    winner4_ind = selection_tournament(gen, fitness_values, winner4, pop_size, tourn_size, vis, file);
+    winner5_ind = selection_tournament(gen, fitness_values, winner5, pop_size, tourn_size, vis, file);
 
     winner1 = gen[winner1_ind];
     winner2 = gen[winner2_ind];
@@ -1079,15 +1087,15 @@ void test_system() {
 void test_master(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, osaka_object_typ ot, bool vis, char* file, bool cache) {
 
     //* Main Shackleton tests 
-    test_basic_printing(indiv_size, ot, vis);
-    test_onepoint_crossover(5, ot, vis);
-    test_crossover_twopoint_diff(10, ot, vis);
-    test_making_generation(2, 10, ot, vis);
-    test_basic_mutation(8, ot, vis);
-    test_copy_generation(1, 4, ot, vis);
-    test_selection_tournament(4, 4, 2, ot, vis, file);
-    test_selection_tournament_multiple(pop_size, 5, tourn_size, ot, vis, file);
-    test_generate_free_individual_inside_array(pop_size, 20, ot, vis);
+    //test_basic_printing(indiv_size, ot, vis);
+    //test_onepoint_crossover(5, ot, vis);
+    //test_crossover_twopoint_diff(10, ot, vis);
+    //test_making_generation(2, 10, ot, vis);
+    //test_basic_mutation(8, ot, vis);
+    //test_copy_generation(1, 4, ot, vis);
+    //test_selection_tournament(4, 4, 2, ot, vis, file);
+    //test_selection_tournament_multiple(pop_size, 5, tourn_size, ot, vis, file);
+    //test_generate_free_individual_inside_array(pop_size, 20, ot, vis);
     test_evolution_basic_crossover_and_mutation_with_replacement(num_gens, pop_size, 50, tourn_size, mut_perc, cross_perc, ot, vis, file, cache);
     //*/
 

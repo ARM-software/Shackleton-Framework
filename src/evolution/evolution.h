@@ -51,6 +51,37 @@
 /*
  * NAME
  *
+ *   evolution_create_new_gen_folder
+ *
+ * DESCRIPTION
+ *
+ *  For an evolutionary run, creates a new generation folder
+ *  that will hold all cached data if caching is enabled
+ *
+ * PARAMETERS
+ *
+ *  char* main_folder - has the base folder path that the new folder will be added to
+ *  uint32_t gen - the generation number for this directory
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ *  evolution_create_new_gen_folder(3);
+ *
+ * SIDE-EFFECT
+ *
+ *  none
+ *
+ */
+
+void evolution_create_new_gen_folder(char* main_folder, uint32_t gen);
+
+/*
+ * NAME
+ *
  *   evolution_basic_crossover_and_mutation
  *
  * DESCRIPTION

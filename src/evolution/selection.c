@@ -101,8 +101,8 @@ bool selection_get_min_max(osaka_object_typ object_type) {
  *
  * PARAMETERS
  *
- *  uint32_t fitness1 - the fitness that is expected to be the "best"
- *  uint32_t fitness2 - the fitness that is being compared with
+ *  double fitness1 - the fitness that is expected to be the "best"
+ *  double fitness2 - the fitness that is being compared with
  *  osaka_object_typ object_type - what osaka object type the individuals being compared are
  *
  * RETURN
@@ -121,7 +121,7 @@ bool selection_get_min_max(osaka_object_typ object_type) {
  *
  */
 
-bool selection_compare_fitness(uint32_t fitness1, uint32_t fitness2, osaka_object_typ object_type) {
+bool selection_compare_fitness(double fitness1, double fitness2, osaka_object_typ object_type) {
     
     // if true, means that a larger value is better
     if (selection_get_min_max(object_type)) {
@@ -148,6 +148,7 @@ bool selection_compare_fitness(uint32_t fitness1, uint32_t fitness2, osaka_objec
  * PARAMETERS
  *
  *  node_str** population - tournament size population
+ *  double* fitness_values_all - fitness values for the entire current population
  *  node_str* result - the node that was chosen
  *  uint32_t pop_size - size of the population
  *  uint32_t tournament_size - number of contestants in the tournament
@@ -167,7 +168,7 @@ bool selection_compare_fitness(uint32_t fitness1, uint32_t fitness2, osaka_objec
  *
  */
 
-uint32_t selection_tournament(node_str** population, node_str* result, uint32_t pop_size, uint32_t tournament_size, bool vis, char* file) {
+uint32_t selection_tournament(node_str** population, double* fitness_values_all, node_str* result, uint32_t pop_size, uint32_t tournament_size, bool vis, char* file) {
 
     // Tournament selection with replacement, individuals can
     // be chosen more than once for the tournament selection process
@@ -212,7 +213,7 @@ uint32_t selection_tournament(node_str** population, node_str* result, uint32_t 
 
     for (uint32_t c = 0; c < tournament_size; c++) {
 
-        fitness_values[c] = fitness_top(population[fitness_indices[c]], vis, file, false, NULL);
+        fitness_values[c] = fitness_values_all[fitness_indices[c]];
 
         // update which is the current best out of those chosen thus far
         if (selection_compare_fitness(fitness_values[c], max_fitness, type)) {
