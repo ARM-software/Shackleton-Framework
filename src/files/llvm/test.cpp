@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "add.h"
+#include "math.h"
 
 // Testcases
 const int n = 3;
@@ -8,6 +8,12 @@ int T[n][3] = {
     { 1, 2, 3 },
     { 2, 4, 6 },
     { -5, 6, 1}
+};
+const int m = 3;
+int M[n][3] = {
+    {3, 4, 12},
+    {-7, 5, -35},
+    {2, 8, 16}
 };
  
 // Driver method
@@ -17,6 +23,13 @@ int main() {
         int c = add(T[i][0], T[i][1]);
         printf("%d + %d = %d?\n", T[i][0], T[i][1], c);
         if (c != T[i][2]) {
+            exit(1);
+        }
+    }
+    for (int i = 0; i < m; i++) {
+        int c = mult(M[i][0], M[i][1]);
+        printf("%d * %d = %d?\n", M[i][0], M[i][1], c);
+        if (c != M[i][2]) {
             exit(1);
         }
     }
