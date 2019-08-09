@@ -151,7 +151,7 @@ uint32_t fitness_osaka_string(node_str* indiv, bool vis);
 /*
  * NAME
  *
- *   fitness_llvm_pass_indiv_file
+ *   fitness_cache_llvm_pass
  *
  * DESCRIPTION
  *
@@ -170,7 +170,7 @@ uint32_t fitness_osaka_string(node_str* indiv, bool vis);
  * EXAMPLE
  *
  * if (cache) {
- *     fitness_llvm_pass_indiv_file(fit, indiv, cache_file);   
+ *     fitness_cache_llvm_pass(fit, indiv, cache_file);   
  * }
  *
  * SIDE-EFFECT
@@ -179,7 +179,7 @@ uint32_t fitness_osaka_string(node_str* indiv, bool vis);
  *
  */
 
-void fitness_llvm_pass_indiv_file(double fitness, node_str* indiv, char* cache_file);
+void fitness_cache_llvm_pass(double fitness, node_str* indiv, char* cache_file);
 
 /*
  * NAME
@@ -246,6 +246,38 @@ uint32_t fitness_binary_up_to_512(node_str* indiv, bool vis);
 /*
  * NAME
  *
+ *  fitness_cache
+ *
+ * DESCRIPTION
+ *
+ *  Caches 
+ *
+ * PARAMETERS
+ *
+ *  double fitness_value - the fitness value of the individual to be cached
+ *  node_str* indiv - pointer to the individual to be cached
+ *  char* cache_file - file where the cached information will reside
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ *  fitness_cache(value, individual, "individual1.txt");
+ *
+ * SIDE-EFFECT
+ *
+ *  none
+ *
+ */
+
+void fitness_cache(double fitness_value, node_str* indiv, char* cache_file);
+
+/*
+ * NAME
+ *
+ *  fitness_top
  *
  * DESCRIPTION
  *

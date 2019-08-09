@@ -30,7 +30,7 @@ DIR := .
 SRCDIR := ./src
 
 OBJDIR := obj
-OBJS := $(addprefix $(OBJDIR)/,main.o osaka.o modules.o simple.o osaka_test.o assembler.o osaka_string.o autogen_test.o llvm_pass.o binary_up_to_512.o evolution.o crossover.o mutation.o generation.o fitness.o selection.o utility.o cJSON.o visualization.o llvm.o test.o)
+OBJS := $(addprefix $(OBJDIR)/,main.o osaka.o modules.o simple.o osaka_test.o assembler.o osaka_string.o llvm_pass.o binary_up_to_512.o evolution.o crossover.o mutation.o generation.o fitness.o selection.o utility.o cJSON.o visualization.o llvm.o test.o)
                 
 osaka : $(OBJS)
 	cc -o shackleton $(OBJS)

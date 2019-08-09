@@ -35,7 +35,7 @@
 
 #include "src/support/test.h"
 
-uint32_t main(uint32_t argc, char* argv[]) {
+int main(uint32_t argc, char* argv[]) {
 
     // parameters for the evolution itself
     uint32_t num_generations = 10;
@@ -251,6 +251,32 @@ uint32_t main(uint32_t argc, char* argv[]) {
         printf("\n");
         str2int(&type_num, type, 10);
         curr_type = type_num - 1;
+
+        if (curr_type == 3) {
+            strcpy(test_file, "");
+
+            printf("You are using the llvm-integrated optimization tool in Shackleton. Please provide a main .c or .cpp test file to use for fitness calculations, with extension: ");
+            scanf("%s", test_file);
+            printf("\nYou have chosen %s as your test file. How many source files will this file be testing?: ", test_file);
+
+            scanf("%s", num_src_files_str);
+            str2int(&num_src_files, num_src_files_str, 10);
+
+            src_files = malloc(num_src_files * sizeof(char*));
+            for (int j = 0; j < num_src_files; j++) {
+                src_files[j] = (char *)malloc(50);
+            }
+
+            printf("%d file(s) will be tested. ", num_src_files);
+            
+            for (int i = 0; i < num_src_files; i++) {
+                printf("Please provide source file number %d: ", i+1);
+                scanf("%s", src_files[i]);
+            }
+
+            llvm_optimizing = true;
+        }
+
     }
     else {
         curr_type = 3; // set to LLVM_PASS, required when optimizing llvm
@@ -267,30 +293,14 @@ uint32_t main(uint32_t argc, char* argv[]) {
 
     // Executing Code -----------------------------------------------------------------
 
-    if (llvm_optimizing) {
-
-        char build_command[5000];
-        char run_command[500];
-
-        strcpy(build_command, "");
-        strcpy(run_command, "");
-
-        llvm_form_test_command(src_files, num_src_files, test_file, build_command, run_command);
-
-        printf("\nBuild command: %s\n\n", build_command);
-        printf("Run command: %s\n\n", run_command);
-
-        llvm_run_command(build_command);
-        llvm_run_command(run_command);
-
-    }
-
+    evolution_basic_crossover_and_mutation_with_replacement(num_generations, num_population_size, 10, tournament_size, percent_mutation, percent_crossover, curr_type, visualization, test_file, caching);
+    
     // --------------------------------------------------------------------------------
 
     // Tests --------------------------------------------------------------------------
 
     if (test) {
-        test_master(num_generations, num_population_size, 20, tournament_size, percent_mutation, percent_crossover, curr_type, visualization, test_file, caching);
+        test_master(num_generations, num_population_size, 10, tournament_size, percent_mutation, percent_crossover, curr_type, visualization, test_file, caching);
     }
 
     // --------------------------------------------------------------------------------

@@ -51,6 +51,73 @@
 /*
  * NAME
  *
+ *   evolution_cache_generation
+ *
+ * DESCRIPTION
+ *
+ *  For a given general, caches information on every individual
+ *  and its fitness in a folder within run/
+ *
+ * PARAMETERS
+ *
+ *  char* main_folder - the folder in which the new file will be housed
+ *  uint32_t gen - the generation number within this run
+ *  uint32_t pop_size - size of a single generation
+ *  node_str** curr_gen - the current generation that is being cached
+ *  bool vis - whether or not visualization is enabled
+ *  char* file - the test file
+ *  double* fitness_values - fitness values for every individual in the current generation
+ *  osaka_object_typ ot - the object type that is being used for this run
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ *  evolution_cache_generation(main_folder_str, 5);
+ *
+ * SIDE-EFFECT
+ *
+ *  Affects the value of main_folder variable
+ *
+ */
+
+void evolution_cache_generation(char* main_folder, uint32_t gen, uint32_t pop_size, node_str** curr_gen, bool vis, char* file, double* fitness_values, osaka_object_typ ot);
+
+/*
+ * NAME
+ *
+ *   evolution_create_new_run_folder
+ *
+ * DESCRIPTION
+ *
+ *  For an evolutionary run, creates a run folder
+ *  that will hold all cached data if caching is enabled
+ *
+ * PARAMETERS
+ *
+ *  char* main_folder - the variable the path of the new folder will be loaded into
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ *  evolution_create_new_run_folder(main_folder_str);
+ *
+ * SIDE-EFFECT
+ *
+ *  Affects the value of main_folder variable
+ *
+ */
+
+void evolution_create_new_run_folder(char* main_folder);
+
+/*
+ * NAME
+ *
  *   evolution_create_new_gen_folder
  *
  * DESCRIPTION

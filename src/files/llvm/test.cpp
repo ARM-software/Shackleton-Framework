@@ -3,17 +3,21 @@
 #include "math.h"
 
 // Testcases
-const int n = 3;
+const int n = 5;
 int T[n][3] = {
     { 1, 2, 3 },
     { 2, 4, 6 },
-    { -5, 6, 1}
+    { -5, 6, 1},
+    {21, 18, 39},
+    {49, 6, 55}
 };
-const int m = 3;
+const int m = 5;
 int M[n][3] = {
     {3, 4, 12},
     {-7, 5, -35},
-    {2, 8, 16}
+    {2, 8, 16},
+    {16, 5, 80},
+    {40, 2, 80}
 };
  
 // Driver method

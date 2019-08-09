@@ -1096,7 +1096,7 @@ void test_master(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint
     //test_selection_tournament(4, 4, 2, ot, vis, file);
     //test_selection_tournament_multiple(pop_size, 5, tourn_size, ot, vis, file);
     //test_generate_free_individual_inside_array(pop_size, 20, ot, vis);
-    test_evolution_basic_crossover_and_mutation_with_replacement(num_gens, pop_size, 50, tourn_size, mut_perc, cross_perc, ot, vis, file, cache);
+    test_evolution_basic_crossover_and_mutation_with_replacement(num_gens, pop_size, indiv_size, tourn_size, mut_perc, cross_perc, ot, vis, file, cache);
     //*/
 
     //* LLVM specific tests

@@ -147,7 +147,7 @@ uint32_t fitness_osaka_string(node_str* indiv, bool vis) {
 /*
  * NAME
  *
- *   fitness_llvm_pass_indiv_file
+ *   fitness_cache_llvm_pass
  *
  * DESCRIPTION
  *
@@ -166,7 +166,7 @@ uint32_t fitness_osaka_string(node_str* indiv, bool vis) {
  * EXAMPLE
  *
  * if (cache) {
- *     fitness_llvm_pass_indiv_file(fit, indiv, cache_file);   
+ *     fitness_cache_llvm_pass(fit, indiv, cache_file);   
  * }
  *
  * SIDE-EFFECT
@@ -175,7 +175,7 @@ uint32_t fitness_osaka_string(node_str* indiv, bool vis) {
  *
  */
 
-void fitness_llvm_pass_indiv_file(double fitness, node_str* indiv, char* cache_file) {
+void fitness_cache_llvm_pass(double fitness, node_str* indiv, char* cache_file) {
 
     char string[30000];
     char fitness_num[100];
@@ -273,6 +273,7 @@ void fitness_llvm_pass_indiv_file(double fitness, node_str* indiv, char* cache_f
 double fitness_llvm_pass(node_str* indiv, char* file, bool vis, bool cache, char* cache_file) {
 
     double fitness = 100.0;
+    uint32_t num_runs = 5;
 
     char file_name[30];
     char base_name[60];
@@ -320,14 +321,26 @@ double fitness_llvm_pass(node_str* indiv, char* file, bool vis, bool cache, char
 
     llvm_run_command(opt_command);
 
+    double total_time = 0.0;
+    double time_taken = 0.0;
+
     gettimeofday(&start, NULL);
-    result = llvm_run_command(run_command);
-    gettimeofday(&end, NULL);
+    for (uint32_t runs = 0; runs < num_runs; runs++) {
 
-    double time_taken = (end.tv_sec - start.tv_sec) * 1e6;
-    time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
+        gettimeofday(&start, NULL);
+        result = llvm_run_command(run_command);
+        gettimeofday(&end, NULL);
 
-    printf("Run command took %f seconds to run\n\n", time_taken);
+        time_taken = (end.tv_sec - start.tv_sec) * 1e6;
+        time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
+
+        total_time = total_time + time_taken;
+
+    }
+
+    time_taken = total_time / num_runs;
+
+    printf("Run command took %f seconds to run, on average over %d runs\n\n", time_taken, num_runs);
     fitness = time_taken;
     if (result > 0) {
 
@@ -337,7 +350,7 @@ double fitness_llvm_pass(node_str* indiv, char* file, bool vis, bool cache, char
 
     if (cache) {
 
-        fitness_llvm_pass_indiv_file(fitness, indiv, cache_file);
+        fitness_cache_llvm_pass(fitness, indiv, cache_file);
 
     }
 
@@ -383,6 +396,58 @@ uint32_t fitness_binary_up_to_512(node_str* indiv, bool vis) {
 /*
  * NAME
  *
+ *  fitness_cache
+ *
+ * DESCRIPTION
+ *
+ *  Caches 
+ *
+ * PARAMETERS
+ *
+ *  double fitness_value - the fitness value of the individual to be cached
+ *  node_str* indiv - pointer to the individual to be cached
+ *  char* cache_file - file where the cached information will reside
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ *  fitness_cache(value, individual, "individual1.txt");
+ *
+ * SIDE-EFFECT
+ *
+ *  none
+ *
+ */
+
+void fitness_cache(double fitness_value, node_str* indiv, char* cache_file) {
+
+    osaka_object_typ type = OBJECT_TYPE(indiv);
+
+    if (type == 0) {
+        //fitness_cache_simple(fitness_value, indiv, cache_file);
+    }
+    else if (type == 1) {
+        //fitness_cache_assembler(fitness_value, indiv, cache_file);
+    }
+    else if (type == 2) {
+        //fitness_cache_osaka_string(fitness_value, indiv, cache_file);
+    }
+    else if (type == 3) {
+        return fitness_cache_llvm_pass(fitness_value, indiv, cache_file);
+    }
+	else if (type == 4) {
+		//fitness_cache_binary_up_to_512(fitness_value, indiv, cache_file);
+	}
+
+}
+
+/*
+ * NAME
+ *
+ *  fitness_top
  *
  * DESCRIPTION
  *

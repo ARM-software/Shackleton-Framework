@@ -41,6 +41,153 @@
 /*
  * NAME
  *
+ *   evolution_cache_generation
+ *
+ * DESCRIPTION
+ *
+ *  For a given general, caches information on every individual
+ *  and its fitness in a folder within run/
+ *
+ * PARAMETERS
+ *
+ *  char* main_folder - the folder in which the new file will be housed
+ *  uint32_t gen - the generation number within this run
+ *  uint32_t pop_size - size of a single generation
+ *  node_str** curr_gen - the current generation that is being cached
+ *  bool vis - whether or not visualization is enabled
+ *  char* file - the test file
+ *  double* fitness_values - fitness values for every individual in the current generation
+ *  osaka_object_typ ot - the object type that is being used for this run
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ *  evolution_cache_generation(main_folder_str, 5);
+ *
+ * SIDE-EFFECT
+ *
+ *  Affects the value of main_folder variable
+ *
+ */
+
+void evolution_cache_generation(char* main_folder, uint32_t gen, uint32_t pop_size, node_str** curr_gen, bool vis, char* file, double* fitness_values, osaka_object_typ ot) {
+
+    char directory_name[70];
+    char generation_num[4];
+
+    sprintf(generation_num, "%d", gen);
+
+    strcpy(directory_name, main_folder);
+    strcat(directory_name, "/generation_");
+    strcat(directory_name, generation_num);
+
+    for (int i = 0; i < pop_size; i++) {
+
+        char individual_num[4];
+
+        sprintf(individual_num, "%d", i);
+
+        char cache_file[100];
+        strcpy(cache_file, directory_name);
+        strcat(cache_file, "/individual");
+        strcat(cache_file, individual_num);
+        strcat(cache_file, ".txt");
+
+        fitness_top(curr_gen[i], vis, file, true, cache_file);
+
+    }
+
+    char best_file[100];
+    strcpy(best_file, directory_name);
+    strcat(best_file, "/best_individual.txt");
+
+    uint32_t winner = 0;
+    double winner_value = fitness_values[0];
+
+    for (uint32_t j = 1; j < pop_size; j++) {
+        if (selection_compare_fitness(fitness_values[j], winner_value, ot)) {
+            winner = j;
+            winner_value = fitness_values[j];
+        }
+    }
+
+    fitness_cache(winner_value, curr_gen[winner], best_file);
+
+}
+
+/*
+ * NAME
+ *
+ *   evolution_create_new_run_folder
+ *
+ * DESCRIPTION
+ *
+ *  For an evolutionary run, creates a run folder
+ *  that will hold all cached data if caching is enabled
+ *
+ * PARAMETERS
+ *
+ *  char* main_folder - the variable the path of the new folder will be loaded into
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ *  evolution_create_new_run_folder(main_folder_str);
+ *
+ * SIDE-EFFECT
+ *
+ *  Affects the value of main_folder variable
+ *
+ */
+
+void evolution_create_new_run_folder(char* main_folder) {
+
+    char hours_str[10], minutes_str[10], seconds_str[10], day_str[10], month_str[10], year_str[10]; 
+
+    // get current date and time
+    time_t now;
+    time(&now);
+    struct tm *local = localtime(&now);
+
+    // get all values into a string format
+    sprintf(hours_str, "%d", local->tm_hour);
+    sprintf(minutes_str, "%d", local->tm_min);
+    sprintf(seconds_str, "%d", local->tm_sec);
+    sprintf(day_str, "%d", local->tm_mday);
+    sprintf(month_str, "%d", local->tm_mon+1);
+    sprintf(year_str, "%d", local->tm_year+1900);
+
+    // form new directory in src/files/cache for this evolutionary run
+    strcpy(main_folder, "src/files/cache/run_");
+    strcat(main_folder, month_str);
+    strcat(main_folder, "_");
+    strcat(main_folder, day_str);
+    strcat(main_folder, "_");
+    strcat(main_folder, year_str);
+    strcat(main_folder, "_");
+    strcat(main_folder, hours_str);
+    strcat(main_folder, "_");
+    strcat(main_folder, minutes_str);
+    strcat(main_folder, "_");
+    strcat(main_folder, seconds_str);
+
+    // create and run the command for making the new directory
+    char create_dir[60];
+    strcpy(create_dir, "mkdir ");
+    strcat(create_dir, main_folder);
+    system(create_dir);
+
+}
+
+/*
+ * NAME
+ *
  *   evolution_create_new_gen_folder
  *
  * DESCRIPTION
@@ -344,53 +491,6 @@ node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
 
 node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, osaka_object_typ ot, bool vis, char* file, bool cache) {
 
-    char main_folder[50];
-
-    if (cache) {
-
-        char hours_str[10], minutes_str[10], seconds_str[10], day_str[10], month_str[10], year_str[10]; 
-
-        // get current date and time
-        time_t now;
-        time(&now);
-        struct tm *local = localtime(&now);
-    
-        // get all values into a string format
-        sprintf(hours_str, "%d", local->tm_hour);
-        sprintf(minutes_str, "%d", local->tm_min);
-        sprintf(seconds_str, "%d", local->tm_sec);
-        sprintf(day_str, "%d", local->tm_mday);
-        sprintf(month_str, "%d", local->tm_mon+1);
-        sprintf(year_str, "%d", local->tm_year+1900);
-
-        // form new directory in src/files/cache for this evolutionary run
-        strcpy(main_folder, "src/files/cache/run_");
-        strcat(main_folder, month_str);
-        strcat(main_folder, "_");
-        strcat(main_folder, day_str);
-        strcat(main_folder, "_");
-        strcat(main_folder, year_str);
-        strcat(main_folder, "_");
-        strcat(main_folder, hours_str);
-        strcat(main_folder, "_");
-        strcat(main_folder, minutes_str);
-        strcat(main_folder, "_");
-        strcat(main_folder, seconds_str);
-
-        // create and run the command for making the new directory
-        char create_dir[60];
-        strcpy(create_dir, "mkdir ");
-        strcat(create_dir, main_folder);
-        system(create_dir);
-
-    }
-
-    if (vis) {
-        printf("Performing our basic tournament/crossover/mutation evolution with replacement --------\n\n");
-    }
-
-    printf("%s", cache ? "true" : "false");
-
     // indexes and temporary values to keep track of information
     uint32_t temp_crossover = 0;
     uint32_t temp_mutation1 = 0;
@@ -411,7 +511,22 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
 
     node_str* current_generation[pop_size];
     node_str* copy_gen[pop_size];
+
     double fitness_values[pop_size];
+
+    char main_folder[50];
+
+    if (cache) {
+
+        evolution_create_new_run_folder(main_folder);
+
+    }
+
+    if (vis) {
+        printf("Performing our basic tournament/crossover/mutation evolution with replacement --------\n\n");
+    }
+
+    // create the initial population
     generate_new_generation(current_generation, pop_size, indiv_size, ot);
 
     // calculate initial fitness values for the current generation
@@ -525,48 +640,7 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
 
         if (cache) {
 
-            char directory_name[70];
-            char generation_num[4];
-
-            sprintf(generation_num, "%d", g);
-
-            strcpy(directory_name, main_folder);
-            strcat(directory_name, "/generation_");
-            strcat(directory_name, generation_num);
-
-            for (int i = 0; i < pop_size; i++) {
-
-                char individual_num[4];
-
-                sprintf(individual_num, "%d", i);
-
-                char cache_file[100];
-                strcpy(cache_file, directory_name);
-                strcat(cache_file, "/individual");
-                strcat(cache_file, individual_num);
-                strcat(cache_file, ".txt");
-
-                fitness_top(current_generation[i], vis, file, true, cache_file);
-
-            }
-
-            char best_file[100];
-            strcpy(best_file, directory_name);
-            strcat(best_file, "/best_individual.txt");
-
-            uint32_t winner = 0;
-            double winner_value = fitness_values[0];
-
-            for (uint32_t j = 1; j < pop_size; j++) {
-                if (selection_compare_fitness(fitness_values[j], winner_value, ot)) {
-                    winner = j;
-                    winner_value = fitness_values[j];
-                }
-            }
-
-            printf("\nBest fitness is that of individual %d : %f\n\n", winner, winner_value);
-
-            fitness_llvm_pass_indiv_file(winner_value, current_generation[winner], best_file);
+            evolution_cache_generation(main_folder, g, pop_size, current_generation, vis, file, fitness_values, ot);
 
         }
 
