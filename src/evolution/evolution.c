@@ -107,12 +107,18 @@ void evolution_cache_generation(char* main_folder, uint32_t gen, uint32_t pop_si
     uint32_t winner = 0;
     double winner_value = fitness_values[0];
 
+    for (uint32_t i = 0; i < pop_size; i++) {
+        printf("\n\nfitness for %d is %f\n", i, fitness_values[i]);
+    }
+
     for (uint32_t j = 1; j < pop_size; j++) {
         if (selection_compare_fitness(fitness_values[j], winner_value, ot)) {
             winner = j;
             winner_value = fitness_values[j];
         }
     }
+
+    printf("\nbest fitness is that of %d, %f\n\n", winner, winner_value);
 
     fitness_cache(winner_value, curr_gen[winner], best_file);
 
@@ -516,14 +522,13 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
 
     char main_folder[50];
 
-    fitness_pre_cache(main_folder, file, src_files, num_src_files, ot, cache);
-    exit(0);
-
     if (cache) {
 
         evolution_create_new_run_folder(main_folder);
 
     }
+
+    fitness_pre_cache(main_folder, file, src_files, num_src_files, ot, cache);
 
     if (vis) {
         printf("Performing our basic tournament/crossover/mutation evolution with replacement --------\n\n");

@@ -196,6 +196,7 @@ void fitness_pre_cache_llvm_pass(char* folder, char* test_file, char** src_files
 
         char test_file_name[30];
         char base_name[60];
+        char time_str[50];
 
         char bc_command[1000];
         char run_command[1000];
@@ -247,13 +248,26 @@ void fitness_pre_cache_llvm_pass(char* folder, char* test_file, char** src_files
         }
 
         time_taken = total_time / num_runs;
+        sprintf(time_str, "%f", time_taken);
+
+        char no_opt_file[60];
+        char no_opt_file_str[5000];
+
+        strcpy(no_opt_file, folder);
+        strcat(no_opt_file, "/original_no_optimization.txt");
+        strcpy(no_opt_file_str, "Description for original file with no optimization applied\n\nThe fitness of the individual is the time it takes to complete the testing script provided in seconds. Lower fitness is better.\n\nFitness of this individual: ");
+        strcat(no_opt_file_str, time_str);
+        strcat(no_opt_file_str, " sec");
+
+        FILE* no_opt_file_ptr = fopen(no_opt_file, "w");
+        fputs(no_opt_file_str, no_opt_file_ptr);
+        fclose(no_opt_file_ptr);
 
         printf("Done. Time taken was %f\n\n", time_taken);
 
         printf("\nRunning the commands with optimizaton\n");
         llvm_run_command(opt_command);
         llvm_run_command(bc_command);
-
 
         for (uint32_t runs = 0; runs < num_runs; runs++) {
 
@@ -269,6 +283,20 @@ void fitness_pre_cache_llvm_pass(char* folder, char* test_file, char** src_files
         }
 
         time_taken = total_time / num_runs;
+        sprintf(time_str, "%f", time_taken);
+
+        char basic_opt_file[60];
+        char basic_opt_file_str[5000];
+
+        strcpy(basic_opt_file, folder);
+        strcat(basic_opt_file, "/original_basic_optimization.txt");
+        strcpy(basic_opt_file_str, "Description for original file with only basic optimization applied\n\nThe fitness of the individual is the time it takes to complete the testing script provided in seconds. Lower fitness is better.\n\nFitness of this individual: ");
+        strcat(basic_opt_file_str, time_str);
+        strcat(basic_opt_file_str, " sec");
+
+        FILE* basic_opt_file_ptr = fopen(basic_opt_file, "w");
+        fputs(basic_opt_file_str, basic_opt_file_ptr);
+        fclose(basic_opt_file_ptr);
 
         printf("Done. Time taken was %f\n\n", time_taken);
 

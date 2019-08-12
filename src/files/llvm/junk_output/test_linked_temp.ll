@@ -62,7 +62,7 @@ define i32 @main() #0 {
 
 ; <label>:41:                                     ; preds = %10
   call void @exit(i32 1) #4
-  unreachable
+  br label %89
 
 ; <label>:42:                                     ; preds = %10
   br label %43
@@ -118,7 +118,7 @@ define i32 @main() #0 {
 
 ; <label>:81:                                     ; preds = %50
   call void @exit(i32 1) #4
-  unreachable
+  br label %89
 
 ; <label>:82:                                     ; preds = %50
   br label %83
@@ -133,6 +133,9 @@ define i32 @main() #0 {
   %87 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @0, i32 0, i32 0))
   %88 = load i32, i32* %1, align 4
   ret i32 %88
+
+; <label>:89:                                     ; preds = %81, %41
+  unreachable
 }
 
 declare i32 @printf(i8*, ...) #1

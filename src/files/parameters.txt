@@ -1,5 +1,5 @@
-num_generations: 3
-num_population_size: 6
+num_generations: 2
+num_population_size: 10
 percent_crossover: 75
 percent_mutation: 25
 tournament_size: 2
