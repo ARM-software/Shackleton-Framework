@@ -147,6 +147,138 @@ uint32_t fitness_osaka_string(node_str* indiv, bool vis) {
 /*
  * NAME
  *
+ *   fitness_pre_cache_llvm_pass
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes the control values for fitness using LLVM opt
+ *
+ * PARAMETERS
+ *
+ *  char* folder - the main run folder that the control will be saved to
+ *  char* test_file - the file that will be measured for its control values
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (object_type == LLVM_PASS) {
+ *     fitness_pre_cache_llvm_pass(main_folder, test_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_pre_cache_llvm_pass(char* folder, char* test_file, char** src_files, uint32_t num_src_files, bool cache) {
+
+    char build_command[5000];
+    strcpy(build_command, "");
+
+    llvm_form_build_ll_command(src_files, num_src_files, test_file, build_command);
+
+    printf("build command: %s\n\n", build_command);
+
+    llvm_run_command(build_command);
+
+    if (cache) {
+
+        struct timeval start, end; 
+        uint32_t result = 0;
+        uint32_t num_runs = 5;
+
+        double total_time = 0.0;
+        double time_taken = 0.0;
+
+        char test_file_name[30];
+        char base_name[60];
+
+        char bc_command[1000];
+        char run_command[1000];
+        char opt_command[1000];
+
+        strcpy(test_file_name, test_file);
+        char* p = strchr(test_file_name, '.');
+
+        strcpy(base_name, "src/files/llvm/");
+
+        if (!p) {
+            printf("File must have valid extension such as .c or .cpp.\n\nAborting code\n\n");
+            exit(0);
+        }
+        *p = 0;
+
+        strcpy(bc_command, "llvm-as ");
+        strcat(bc_command, base_name);
+        strcat(bc_command, test_file_name);
+        strcat(bc_command, "_linked.ll");
+
+        strcpy(run_command, "lli ");
+        strcat(run_command, base_name);
+        strcat(run_command, test_file_name);
+        strcat(run_command, "_linked.bc");
+
+        strcpy(opt_command, "opt ");
+        strcat(opt_command, base_name);
+        strcat(opt_command, test_file_name);
+        strcat(opt_command, "_linked.ll -S -o ");
+        strcat(opt_command, base_name);
+        strcat(opt_command, test_file_name);
+        strcat(opt_command, "_linked_opt.ll");
+
+        printf("\nRunning the commands for no optimizaton\n");
+        llvm_run_command(bc_command);
+
+        for (uint32_t runs = 0; runs < num_runs; runs++) {
+
+            gettimeofday(&start, NULL);
+            result = llvm_run_command(run_command);
+            gettimeofday(&end, NULL);
+
+            time_taken = (end.tv_sec - start.tv_sec) * 1e6;
+            time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
+
+            total_time = total_time + time_taken;
+
+        }
+
+        time_taken = total_time / num_runs;
+
+        printf("Done. Time taken was %f\n\n", time_taken);
+
+        printf("\nRunning the commands with optimizaton\n");
+        llvm_run_command(opt_command);
+        llvm_run_command(bc_command);
+
+
+        for (uint32_t runs = 0; runs < num_runs; runs++) {
+
+            gettimeofday(&start, NULL);
+            result = llvm_run_command(run_command);
+            gettimeofday(&end, NULL);
+
+            time_taken = (end.tv_sec - start.tv_sec) * 1e6;
+            time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
+
+            total_time = total_time + time_taken;
+
+        }
+
+        time_taken = total_time / num_runs;
+
+        printf("Done. Time taken was %f\n\n", time_taken);
+
+    }
+
+}
+
+/*
+ * NAME
+ *
  *   fitness_cache_llvm_pass
  *
  * DESCRIPTION
@@ -270,7 +402,7 @@ void fitness_cache_llvm_pass(double fitness, node_str* indiv, char* cache_file) 
  *
  */
 
-double fitness_llvm_pass(node_str* indiv, char* file, bool vis, bool cache, char* cache_file) {
+double fitness_llvm_pass(node_str* indiv, char* file, char** src_files, uint32_t num_src_files, bool vis, bool cache, char* cache_file) {
 
     double fitness = 100.0;
     uint32_t num_runs = 5;
@@ -396,6 +528,57 @@ uint32_t fitness_binary_up_to_512(node_str* indiv, bool vis) {
 /*
  * NAME
  *
+ *  fitness_pre_cache
+ *
+ * DESCRIPTION
+ *
+ *  Does an initial setup cache, is dependent on the object type
+ *
+ * PARAMETERS
+ *
+ *  char* folder - the folder where the pre caching files will be housed
+ *  char* file - for some object types, will be a file used for the caching
+ *  osaka_object_typ type - the object type for this evolutionary run
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ *  if (cache) {
+ *      fitness_pre_cache(main_folder, test_file, ot);    
+ *  }
+ *
+ * SIDE-EFFECT
+ *
+ *  none
+ *
+ */
+
+void fitness_pre_cache(char* folder, char* test_file, char** src_files, uint32_t num_src_files, osaka_object_typ type, bool cache) {
+
+    if (type == 0) {
+        //fitness_cache_simple(fitness_value, indiv, cache_file);
+    }
+    else if (type == 1) {
+        //fitness_cache_assembler(fitness_value, indiv, cache_file);
+    }
+    else if (type == 2) {
+        //fitness_cache_osaka_string(fitness_value, indiv, cache_file);
+    }
+    else if (type == 3) {
+        return fitness_pre_cache_llvm_pass(folder, test_file, src_files, num_src_files, cache);
+    }
+	else if (type == 4) {
+		//fitness_cache_binary_up_to_512(fitness_value, indiv, cache_file);
+	}
+
+}
+
+/*
+ * NAME
+ *
  *  fitness_cache
  *
  * DESCRIPTION
@@ -473,7 +656,7 @@ void fitness_cache(double fitness_value, node_str* indiv, char* cache_file) {
  *
  */
 
-double fitness_top(node_str* indiv, bool vis, char* test_file, bool cache, char* cache_file) {
+double fitness_top(node_str* indiv, bool vis, char* test_file, char** src_files, uint32_t num_src_files, bool cache, char* cache_file) {
 
     osaka_object_typ type = OBJECT_TYPE(indiv);
 
@@ -487,7 +670,7 @@ double fitness_top(node_str* indiv, bool vis, char* test_file, bool cache, char*
         return fitness_osaka_string(indiv, vis);
     }
     else if (type == 3) {
-        return fitness_llvm_pass(indiv, test_file, vis, cache, cache_file);
+        return fitness_llvm_pass(indiv, test_file, src_files, num_src_files, vis, cache, cache_file);
     }
 	else if (type == 4) {
 		return fitness_binary_up_to_512(indiv, vis);

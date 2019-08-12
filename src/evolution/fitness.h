@@ -48,7 +48,7 @@
 uint32_t (*fpfitness_simple)(node_str *n, bool vis);
 uint32_t (*fpfitness_assembler)(node_str *n, bool vis);
 uint32_t (*fpfitness_osaka_string)(node_str *n, bool vis);
-double (*fpfitness_llvm_pass)(node_str *n, char* file, bool vis, bool cache, char* cache_file);
+double (*fpfitness_llvm_pass)(node_str* indiv, char* file, char** src_files, uint32_t num_src_files, bool vis, bool cache, char* cache_file);
 uint32_t (*fpfitness_binary_up_to_512)(node_str *n, bool vis);
 
 /*
@@ -151,6 +151,38 @@ uint32_t fitness_osaka_string(node_str* indiv, bool vis);
 /*
  * NAME
  *
+ *   fitness_pre_cache_llvm_pass
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes the control values for fitness using LLVM opt
+ *
+ * PARAMETERS
+ *
+ *  char* folder - the main run folder that the control will be saved to
+ *  char* test_file - the file that will be measured for its control values
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (object_type == LLVM_PASS) {
+ *     fitness_pre_cache_llvm_pass(main_folder, test_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_pre_cache_llvm_pass(char* folder, char* test_file, char** src_files, uint32_t num_src_files, bool cache);
+
+/*
+ * NAME
+ *
  *   fitness_cache_llvm_pass
  *
  * DESCRIPTION
@@ -210,7 +242,7 @@ void fitness_cache_llvm_pass(double fitness, node_str* indiv, char* cache_file);
  *
  */
 
-double fitness_llvm_pass(node_str* indiv, char* file, bool vis, bool cache, char* cache_file);
+double fitness_llvm_pass(node_str* indiv, char* file, char** src_files, uint32_t num_src_files, bool vis, bool cache, char* cache_file);
 
 /*
  * NAME
@@ -242,6 +274,39 @@ double fitness_llvm_pass(node_str* indiv, char* file, bool vis, bool cache, char
  */
 
 uint32_t fitness_binary_up_to_512(node_str* indiv, bool vis);
+
+/*
+ * NAME
+ *
+ *  fitness_pre_cache
+ *
+ * DESCRIPTION
+ *
+ *  Does an initial setup cache, is dependent on the object type
+ *
+ * PARAMETERS
+ *
+ *  char* folder - the folder where the pre caching files will be housed
+ *  char* file - for some object types, will be a file used for the caching
+ *  osaka_object_typ type - the object type for this evolutionary run
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ *  if (cache) {
+ *      fitness_pre_cache(main_folder, test_file, ot);    
+ *  }
+ *
+ * SIDE-EFFECT
+ *
+ *  none
+ *
+ */
+
+void fitness_pre_cache(char* folder, char* test_file, char** src_files, uint32_t num_src_files, osaka_object_typ type, bool cache);
 
 /*
  * NAME
@@ -303,7 +368,7 @@ void fitness_cache(double fitness_value, node_str* indiv, char* cache_file);
  *
  */
 
-double fitness_top(node_str* indiv, bool vis, char* test_file, bool cache, char* cache_file);
+double fitness_top(node_str* indiv, bool vis, char* test_file, char** src_files, uint32_t num_src_files, bool cache, char* cache_file);
 
 /*
  * NAME

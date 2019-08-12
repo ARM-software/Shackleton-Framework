@@ -293,14 +293,14 @@ int main(uint32_t argc, char* argv[]) {
 
     // Executing Code -----------------------------------------------------------------
 
-    evolution_basic_crossover_and_mutation_with_replacement(num_generations, num_population_size, 10, tournament_size, percent_mutation, percent_crossover, curr_type, visualization, test_file, caching);
+    evolution_basic_crossover_and_mutation_with_replacement(num_generations, num_population_size, 10, tournament_size, percent_mutation, percent_crossover, curr_type, visualization, test_file, src_files, num_src_files, caching);
     
     // --------------------------------------------------------------------------------
 
     // Tests --------------------------------------------------------------------------
 
     if (test) {
-        test_master(num_generations, num_population_size, 10, tournament_size, percent_mutation, percent_crossover, curr_type, visualization, test_file, caching);
+        test_master(num_generations, num_population_size, 10, tournament_size, percent_mutation, percent_crossover, curr_type, visualization, test_file, src_files, num_src_files, caching);
     }
 
     // --------------------------------------------------------------------------------

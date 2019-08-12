@@ -3,14 +3,14 @@ source_filename = "llvm-link"
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
-@T = local_unnamed_addr global [5 x [3 x i32]] [[3 x i32] [i32 1, i32 2, i32 3], [3 x i32] [i32 2, i32 4, i32 6], [3 x i32] [i32 -5, i32 6, i32 1], [3 x i32] [i32 21, i32 18, i32 39], [3 x i32] [i32 49, i32 6, i32 55]], align 16
-@M = local_unnamed_addr global [5 x [3 x i32]] [[3 x i32] [i32 3, i32 4, i32 12], [3 x i32] [i32 -7, i32 5, i32 -35], [3 x i32] [i32 2, i32 8, i32 16], [3 x i32] [i32 16, i32 5, i32 80], [3 x i32] [i32 40, i32 2, i32 80]], align 16
+@T = global [5 x [3 x i32]] [[3 x i32] [i32 1, i32 2, i32 3], [3 x i32] [i32 2, i32 4, i32 6], [3 x i32] [i32 -5, i32 6, i32 1], [3 x i32] [i32 21, i32 18, i32 39], [3 x i32] [i32 49, i32 6, i32 55]], align 16
+@M = global [5 x [3 x i32]] [[3 x i32] [i32 3, i32 4, i32 12], [3 x i32] [i32 -7, i32 5, i32 -35], [3 x i32] [i32 2, i32 8, i32 16], [3 x i32] [i32 16, i32 5, i32 80], [3 x i32] [i32 40, i32 2, i32 80]], align 16
 @0 = private unnamed_addr constant [2 x i8] c"\0A\00", align 1
 @1 = private unnamed_addr constant [15 x i8] c"%d + %d = %d?\0A\00", align 1
 @2 = private unnamed_addr constant [15 x i8] c"%d * %d = %d?\0A\00", align 1
 
 ; Function Attrs: noinline norecurse optnone uwtable
-define i32 @main() local_unnamed_addr #0 {
+define i32 @main() #0 {
   %1 = alloca i32, align 4
   %2 = alloca i32, align 4
   %3 = alloca i32, align 4
@@ -135,13 +135,13 @@ define i32 @main() local_unnamed_addr #0 {
   ret i32 %88
 }
 
-declare i32 @printf(i8*, ...) local_unnamed_addr #1
+declare i32 @printf(i8*, ...) #1
 
 ; Function Attrs: noreturn nounwind
-declare void @exit(i32) local_unnamed_addr #2
+declare void @exit(i32) #2
 
 ; Function Attrs: noinline nounwind optnone uwtable
-define i32 @_Z3addii(i32, i32) local_unnamed_addr #3 {
+define i32 @_Z3addii(i32, i32) #3 {
   %3 = alloca i32, align 4
   %4 = alloca i32, align 4
   store i32 %0, i32* %3, align 4
@@ -153,7 +153,7 @@ define i32 @_Z3addii(i32, i32) local_unnamed_addr #3 {
 }
 
 ; Function Attrs: noinline nounwind optnone uwtable
-define i32 @_Z4multii(i32, i32) local_unnamed_addr #3 {
+define i32 @_Z4multii(i32, i32) #3 {
   %3 = alloca i32, align 4
   %4 = alloca i32, align 4
   store i32 %0, i32* %3, align 4

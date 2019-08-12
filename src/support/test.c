@@ -635,7 +635,7 @@ void test_copy_generation(uint32_t pop_size, uint32_t indiv_size, osaka_object_t
  *
  */
 
-void test_selection_tournament(uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, osaka_object_typ ot, bool vis, char* file) {
+void test_selection_tournament(uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files) {
 
     if (vis) {
 
@@ -651,8 +651,10 @@ void test_selection_tournament(uint32_t pop_size, uint32_t indiv_size, uint32_t 
     generate_new_generation(gen, pop_size, indiv_size, ot);
 
     for (uint32_t k = 0; k < pop_size; k++) {
-        fitness_values[k] = fitness_top(gen[k], false, file, false, NULL);
+        fitness_values[k] = fitness_top(gen[k], false, file, src_files, num_src_files, false, NULL);
         printf("\n%f\n", fitness_values[k]);
+
+        fitness_top(gen[k], false, file, src_files, num_src_files, false, NULL);
     }
 
     if (vis) {
@@ -722,7 +724,7 @@ void test_selection_tournament(uint32_t pop_size, uint32_t indiv_size, uint32_t 
  *
  */
 
-void test_selection_tournament_multiple(uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, osaka_object_typ ot, bool vis, char* file) {
+void test_selection_tournament_multiple(uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files) {
 
     if (vis) {
 
@@ -747,7 +749,7 @@ void test_selection_tournament_multiple(uint32_t pop_size, uint32_t indiv_size, 
     generate_new_generation(gen, pop_size, indiv_size, ot);
 
     for (uint32_t k = 0; k < pop_size; k++) {
-        fitness_values[k] = fitness_top(gen[k], false, file, false, NULL);
+        fitness_values[k] = fitness_top(gen[k], false, file, src_files, num_src_files, false, NULL);
     }
 
     winner1_ind = selection_tournament(gen, fitness_values, winner1, pop_size, tourn_size, vis, file);
@@ -935,12 +937,12 @@ void test_evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
     
     }
 
-    node_str* best_indiv = evolution_basic_crossover_and_mutation(num_gens, pop_size, indiv_size, tourn_size, mut_perc, cross_perc, ot, vis, file);
+    //node_str* best_indiv = evolution_basic_crossover_and_mutation(num_gens, pop_size, indiv_size, tourn_size, mut_perc, cross_perc, ot, vis, file);
 
     if (vis) {
 
         printf("Best individual that was passed back to the test: ------------------------------------\n\n");
-        visualization_print_individual_concise_details(best_indiv);
+        //visualization_print_individual_concise_details(best_indiv);
         printf("\n\n--------------------------------------------------------------------------------------\n\n");
 
     }
@@ -951,7 +953,7 @@ void test_evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
 
     }
 
-    generate_free_individual(best_indiv);
+    //generate_free_individual(best_indiv);
 
 }
 
@@ -989,7 +991,7 @@ void test_evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
  *
  */
 
-void test_evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, osaka_object_typ ot, bool vis, char* file, bool cache) {
+void test_evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache) {
 
     if (vis) {
 
@@ -997,7 +999,7 @@ void test_evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
     
     }
 
-    node_str* best_indiv = evolution_basic_crossover_and_mutation_with_replacement(num_gens, pop_size, indiv_size, tourn_size, mut_perc, cross_perc, ot, vis, file, cache);
+    node_str* best_indiv = evolution_basic_crossover_and_mutation_with_replacement(num_gens, pop_size, indiv_size, tourn_size, mut_perc, cross_perc, ot, vis, file, src_files, num_src_files, cache);
 
     if (vis) {
 
@@ -1084,7 +1086,7 @@ void test_system() {
  *
  */
 
-void test_master(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, osaka_object_typ ot, bool vis, char* file, bool cache) {
+void test_master(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache) {
 
     //* Main Shackleton tests 
     //test_basic_printing(indiv_size, ot, vis);
@@ -1093,10 +1095,10 @@ void test_master(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint
     //test_making_generation(2, 10, ot, vis);
     //test_basic_mutation(8, ot, vis);
     //test_copy_generation(1, 4, ot, vis);
-    //test_selection_tournament(4, 4, 2, ot, vis, file);
-    //test_selection_tournament_multiple(pop_size, 5, tourn_size, ot, vis, file);
+    //test_selection_tournament(4, 4, 2, ot, vis, file, src_files, num_src_files);
+    //test_selection_tournament_multiple(pop_size, 5, tourn_size, ot, vis, file, src_files, num_src_files);
     //test_generate_free_individual_inside_array(pop_size, 20, ot, vis);
-    test_evolution_basic_crossover_and_mutation_with_replacement(num_gens, pop_size, indiv_size, tourn_size, mut_perc, cross_perc, ot, vis, file, cache);
+    test_evolution_basic_crossover_and_mutation_with_replacement(num_gens, pop_size, indiv_size, tourn_size, mut_perc, cross_perc, ot, vis, file, src_files, num_src_files, cache);
     //*/
 
     //* LLVM specific tests

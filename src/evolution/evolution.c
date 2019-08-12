@@ -73,7 +73,7 @@
  *
  */
 
-void evolution_cache_generation(char* main_folder, uint32_t gen, uint32_t pop_size, node_str** curr_gen, bool vis, char* file, double* fitness_values, osaka_object_typ ot) {
+void evolution_cache_generation(char* main_folder, uint32_t gen, uint32_t pop_size, node_str** curr_gen, bool vis, char* file, char** src_files, uint32_t num_src_files, double* fitness_values, osaka_object_typ ot) {
 
     char directory_name[70];
     char generation_num[4];
@@ -96,7 +96,7 @@ void evolution_cache_generation(char* main_folder, uint32_t gen, uint32_t pop_si
         strcat(cache_file, individual_num);
         strcat(cache_file, ".txt");
 
-        fitness_top(curr_gen[i], vis, file, true, cache_file);
+        fitness_top(curr_gen[i], vis, file, src_files, num_src_files, true, cache_file);
 
     }
 
@@ -270,7 +270,7 @@ void evolution_create_new_gen_folder(char* main_folder, uint32_t gen) {
  *
  */
 
-node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, osaka_object_typ ot, bool vis, char* file) {
+/* node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, osaka_object_typ ot, bool vis, char* file) {
 
     if (vis) {
         printf("Performing our basic tournament/crossover/mutation evolution -------------------------\n\n");
@@ -304,7 +304,7 @@ node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
         fitness_values[k] = fitness_top(current_generation[k], false, file, false, NULL);
     }
 
-    /*if (vis) {
+    if (vis) {
 
         for (int i = 0; i < pop_size; i++) {
         
@@ -314,7 +314,7 @@ node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
 
         }
 
-    }*/
+    }
 
     for (uint32_t g = 0; g < num_gens; g++) {
 
@@ -355,12 +355,12 @@ node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
             contestant1 = copy_gen[contestant1_ind];
             contestant2 = copy_gen[contestant2_ind];
 
-            /*if (vis) {
+            if (vis) {
 
                 printf("Contestant 1 starts at node %d\n", UID(contestant1));
                 printf("Contestant 2 starts at node %d\n\n", UID(contestant2));
 
-            }*/
+            }
 
             temp_crossover = (uint32_t) (100 * (rand() / (RAND_MAX + 1.0)));
             temp_mutation1 = (uint32_t) (100 * (rand() / (RAND_MAX + 1.0)));
@@ -410,7 +410,7 @@ node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
             fitness_values[k] = fitness_top(current_generation[k], false, file, false, NULL);
         }
 
-        /*if (vis) {
+        if (vis) {
 
             for (int i = 0; i < pop_size; i++) {
         
@@ -422,7 +422,7 @@ node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
 
             printf("-------------------------------- End of Generation %d --------------------------------\n\n", g + 1);
 
-        }*/
+        }
 
     }
 
@@ -447,7 +447,7 @@ node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
     
     return final_node;
 
-}
+} */
 
 /*
  * NAME
@@ -489,7 +489,7 @@ node_str* evolution_basic_crossover_and_mutation(uint32_t num_gens, uint32_t pop
  *
  */
 
-node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, osaka_object_typ ot, bool vis, char* file, bool cache) {
+node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache) {
 
     // indexes and temporary values to keep track of information
     uint32_t temp_crossover = 0;
@@ -516,6 +516,9 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
 
     char main_folder[50];
 
+    fitness_pre_cache(main_folder, file, src_files, num_src_files, ot, cache);
+    exit(0);
+
     if (cache) {
 
         evolution_create_new_run_folder(main_folder);
@@ -531,7 +534,7 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
 
     // calculate initial fitness values for the current generation
     for (uint32_t k = 0; k < pop_size; k++) {
-        fitness_values[k] = fitness_top(current_generation[k], false, file, false, NULL);
+        fitness_values[k] = fitness_top(current_generation[k], false, file, src_files, num_src_files, false, NULL);
     }
 
     if (vis) {
@@ -623,7 +626,7 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
 
         // refresh fitness values for the current_generation
         for (uint32_t k = 0; k < pop_size; k++) {
-            fitness_values[k] = fitness_top(current_generation[k], false, file, false, NULL);
+            fitness_values[k] = fitness_top(current_generation[k], false, file, src_files, num_src_files, false, NULL);
         }
 
         generate_free_generation(copy_gen, copy_size);
@@ -640,7 +643,7 @@ node_str* evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_g
 
         if (cache) {
 
-            evolution_cache_generation(main_folder, g, pop_size, current_generation, vis, file, fitness_values, ot);
+            evolution_cache_generation(main_folder, g, pop_size, current_generation, vis, file, src_files, num_src_files, fitness_values, ot);
 
         }
 
