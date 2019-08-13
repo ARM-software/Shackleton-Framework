@@ -91,4 +91,4 @@ You are now ready to build the Shackleton tool. In the terminal, go to the top l
 
 --------
 
-For any questions or comments for the creator of this tool, please message hpeeler@utexas.edu. This tool was intially created during a summer internship at Arm Ltd. in collaboration with professor Wolfgang Banzhaf and postdoc Yuan Yuan out of Michigan State University.
+For any questions or comments for the creator of this tool, please message hpeeler@utexas.edu. This tool was intially created during a summer internship at Arm Ltd. in collaboration with professor [Wolfgang Banzhaf](http://www.cse.msu.edu/~banzhafw/) and postdoc [Yuan Yuan](https://www.researchgate.net/profile/Yuan_Yuan73) out of Michigan State University.
