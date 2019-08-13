@@ -1,0 +1,18 @@
+Description file for Individual 1
+
+Here are the passes in this individual, in order:
+
+-mergefunc
+-memdep
+-loop-simplify
+-jump-threading
+-instcount
+-ipsccp
+-postdomtree
+-simplifycfg
+-constprop
+-lazy-value-info
+
+The fitness of the individual is the time it takes to complete the testing script provided in seconds after the specified optimization passes are applied. Lower fitness is better.
+
+Fitness of this individual: 0.105943 sec

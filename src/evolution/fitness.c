@@ -264,6 +264,8 @@ void fitness_pre_cache_llvm_pass(char* folder, char* test_file, char** src_files
         fclose(no_opt_file_ptr);
 
         printf("Done. Time taken was %f\n\n", time_taken);
+        time_taken = 0.0;
+        total_time = 0.0;
 
         printf("\nRunning the commands with optimizaton\n");
         llvm_run_command(opt_command);

@@ -1,0 +1,18 @@
+Description file for Individual 1
+
+Here are the passes in this individual, in order:
+
+-instcombine
+-codegenprepare
+-licm
+-da
+-instcount
+-lint
+-domfrontier
+-globalopt
+-iv-users
+-loop-deletion
+
+The fitness of the individual is the time it takes to complete the testing script provided in seconds after the specified optimization passes are applied. Lower fitness is better.
+
+Fitness of this individual: 0.114787 sec

@@ -1,0 +1,18 @@
+Description file for Individual 1
+
+Here are the passes in this individual, in order:
+
+-instcount
+-dse
+-dse
+-loop-unroll
+-mem2reg
+-instcount
+-deadargelim
+-partial-inliner
+-prune-eh
+-basicaa
+
+The fitness of the individual is the time it takes to complete the testing script provided in seconds after the specified optimization passes are applied. Lower fitness is better.
+
+Fitness of this individual: 0.118325 sec
