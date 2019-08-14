@@ -52,3 +52,9 @@ At the top-level of shackleton, evolution utilizes all of the tools that are des
 -  visualization: A flag that indicates if visualization of the process will be used. If the flag is present in the command then visualization will be used, it will not be used otherwise.
 
 These parameters are set by the user and are passed to the respective operators that use them.
+
+**---- Caching ----**
+
+When caching is enabled for an evolutionary run, information from that run will be saved in a folder titled run_date_time where date and time are represented as MM_DD_YYYY and HH_MM_SS respectively. You can see a view of the final folder that is created for any given run using the caching functionality. The infomation cached includes a description of every individual in every generation with their fitness value, the best individual for each generation, and other general information about the run and its iterations.
+
+![alt text](../../img/caching.PNG "Filesystem view when caching data")
