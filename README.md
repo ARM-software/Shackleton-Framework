@@ -37,6 +37,14 @@ LPG solves problems that are sequential.  This is useful for optimizing programs
 
 --------
 
+# LLVM Optimization using Shackleton
+
+Shackleton comes pre-built with an LLVM optimizer optimizer (say that 5 times fast) baked into the framework. What that means is that one of the default object types (modules) available to the user is the LLVM_PASS module. Each instance of this module represents a single LLVM_PASS, while an Osaka List Structure (OSL) of this module represents a sequence of LLVM optimization passes that can be applied to a program. The framework iterates through its generations by creating new optimization sequences, applying them to inputted source code, and measuring their fitness by the amount of compute time. The optimization sequence that results in optimized code with the shortest time to run is considered the "best individual".
+
+When the -llvm_optimize flag is provided to the tool, it automatically takes you through a series of questions to input a series of source files to be tested against different optimization sequences.All source files used with this portion of the tool should be placed in src/files/llvm. The tool looks for files in relation to that directory, so if you input a file as "test.cpp" then the tool will look for that file in src/files/llvm/test.cpp. 
+
+--------
+
 # Requirements for use, Installation Instructions
 
 Shackleton comes in the form of a code repository that can be made and then run from the command line using the "make" command and then run with the call "./shackleton". The tool can be run with a number of available flags, listed here with their descriptions:
@@ -83,4 +91,4 @@ You are now ready to build the Shackleton tool. In the terminal, go to the top l
 
 --------
 
-For any questions or comments for the creator of this tool, please message hpeeler@utexas.edu. This tool was intially created during a summer internship at Arm Ltd. in collaboration with professor Wolfgang Banzhaf and postdoc Yuan Yuan out of Michigan State University.
+For any questions or comments for the creator of this tool, please message hpeeler@utexas.edu. This tool was intially created during a summer internship at Arm Ltd. in collaboration with professor [Wolfgang Banzhaf](http://www.cse.msu.edu/~banzhafw/) and postdoc [Yuan Yuan](https://www.researchgate.net/profile/Yuan_Yuan73) out of Michigan State University.
