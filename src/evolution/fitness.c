@@ -42,6 +42,79 @@
 /*
  * NAME
  *
+ *   fitness_pre_cache_simple
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes the control values for fitness using LLVM opt
+ *
+ * PARAMETERS
+ *
+ *  char* folder - the main run folder that the control will be saved to
+ *  char* bool - whether or not caching is being used
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (object_type == SIMPLE) {
+ *     fitness_pre_cache_simple(main_folder, test_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_pre_cache_simple(char* folder, bool cache) {
+
+    // do nothing, default for now
+
+}
+
+/*
+ * NAME
+ *
+ *   fitness_cache_simple
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes an individual along with their fitness
+ *
+ * PARAMETERS
+ *
+ *  double fitness - the fitness of the individual in question
+ *  node_str* indiv - the individual that is to be evaluated
+ *  char* cache_file - the file that will hold the outputted information
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (cache) {
+ *     fitness_cache_simple(fit, indiv, cache_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_cache_simple(double fitness, node_str* indiv, char* cache_file) {
+
+    // do nothing, default for now
+
+}
+
+/*
+ * NAME
+ *
  *   fitness_simple
  *
  * DESCRIPTION
@@ -77,6 +150,79 @@ uint32_t fitness_simple(node_str* indiv, bool vis) {
 /*
  * NAME
  *
+ *   fitness_pre_cache_assembler
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes the control values for fitness using LLVM opt
+ *
+ * PARAMETERS
+ *
+ *  char* folder - the main run folder that the control will be saved to
+ *  char* bool - whether or not caching is being used
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (object_type == ASSEMBLER) {
+ *     fitness_pre_cache_assembler(main_folder, test_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_pre_cache_assembler(char* folder, bool cache) {
+
+    // do nothing, default for now
+
+}
+
+/*
+ * NAME
+ *
+ *   fitness_cache_assembler
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes an individual along with their fitness
+ *
+ * PARAMETERS
+ *
+ *  double fitness - the fitness of the individual in question
+ *  node_str* indiv - the individual that is to be evaluated
+ *  char* cache_file - the file that will hold the outputted information
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (cache) {
+ *     fitness_cache_assembler(fit, indiv, cache_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_cache_assembler(double fitness, node_str* indiv, char* cache_file) {
+
+    // do nothing, default for now
+
+}
+
+/*
+ * NAME
+ *
  *   fitness_assembler
  *
  * DESCRIPTION
@@ -106,6 +252,79 @@ uint32_t fitness_simple(node_str* indiv, bool vis) {
 uint32_t fitness_assembler(node_str* indiv, bool vis) {
 
     return 100 * (rand() / (RAND_MAX + 1.0)); 
+
+}
+
+/*
+ * NAME
+ *
+ *   fitness_pre_cache_osaka_string
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes the control values for fitness using LLVM opt
+ *
+ * PARAMETERS
+ *
+ *  char* folder - the main run folder that the control will be saved to
+ *  char* bool - whether or not caching is being used
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (object_type == OSAKA_STRING) {
+ *     fitness_pre_cache_osaka_string(main_folder, test_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_pre_cache_osaka_string(char* folder, bool cache) {
+
+    // do nothing, default for now
+
+}
+
+/*
+ * NAME
+ *
+ *   fitness_cache_osaka_string
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes an individual along with their fitness
+ *
+ * PARAMETERS
+ *
+ *  double fitness - the fitness of the individual in question
+ *  node_str* indiv - the individual that is to be evaluated
+ *  char* cache_file - the file that will hold the outputted information
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (cache) {
+ *     fitness_cache_osaka_string(fit, indiv, cache_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_cache_osaka_string(double fitness, node_str* indiv, char* cache_file) {
+
+    // do nothing, default for now
 
 }
 
@@ -523,6 +742,79 @@ double fitness_llvm_pass(node_str* indiv, char* file, char** src_files, uint32_t
 /*
  * NAME
  *
+ *   fitness_pre_cache_binary_up_to_512
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes the control values for fitness using LLVM opt
+ *
+ * PARAMETERS
+ *
+ *  char* folder - the main run folder that the control will be saved to
+ *  char* bool - whether or not caching is being used
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (object_type == BINARY_UP_TO_512) {
+ *     fitness_pre_cache_llvm_pass(main_folder, test_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_pre_cache_binary_up_to_512(char* folder, bool cache) {
+
+    // do nothing, default for now
+
+}
+
+/*
+ * NAME
+ *
+ *   fitness_cache_binary_up_to_512
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes an individual along with their fitness
+ *
+ * PARAMETERS
+ *
+ *  double fitness - the fitness of the individual in question
+ *  node_str* indiv - the individual that is to be evaluated
+ *  char* cache_file - the file that will hold the outputted information
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (cache) {
+ *     fitness_cache_binary_up_to_512(fit, indiv, cache_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_cache_binary_up_to_512(double fitness, node_str* indiv, char* cache_file) {
+
+    // do nothing, default for now
+
+}
+
+/*
+ * NAME
+ *
  *   fitness_binary_up_to_512
  *
  * DESCRIPTION
@@ -588,20 +880,20 @@ uint32_t fitness_binary_up_to_512(node_str* indiv, bool vis) {
 
 void fitness_pre_cache(char* folder, char* test_file, char** src_files, uint32_t num_src_files, osaka_object_typ type, bool cache) {
 
-    if (type == 0) {
-        //fitness_cache_simple(fitness_value, indiv, cache_file);
+    if (type == 0) {    // SIMPLE
+        return fitness_pre_cache_simple(folder, cache);
     }
-    else if (type == 1) {
-        //fitness_cache_assembler(fitness_value, indiv, cache_file);
+    else if (type == 1) {   // ASSEMBLER
+        return fitness_pre_cache_assembler(folder, cache);
     }
-    else if (type == 2) {
-        //fitness_cache_osaka_string(fitness_value, indiv, cache_file);
+    else if (type == 2) {   // OSAKA_STRING
+        return fitness_pre_cache_osaka_string(folder, cache);
     }
-    else if (type == 3) {
+    else if (type == 3) { // LLVM_PASS
         return fitness_pre_cache_llvm_pass(folder, test_file, src_files, num_src_files, cache);
     }
-	else if (type == 4) {
-		//fitness_cache_binary_up_to_512(fitness_value, indiv, cache_file);
+	else if (type == 4) { // BINARY_UP_TO_512
+		return fitness_pre_cache_binary_up_to_512(folder, cache);
 	}
 
 }
@@ -639,20 +931,20 @@ void fitness_cache(double fitness_value, node_str* indiv, char* cache_file) {
 
     osaka_object_typ type = OBJECT_TYPE(indiv);
 
-    if (type == 0) {
-        //fitness_cache_simple(fitness_value, indiv, cache_file);
+    if (type == 0) {    // SIMPLE
+        return fitness_cache_simple(fitness_value, indiv, cache_file);
     }
-    else if (type == 1) {
-        //fitness_cache_assembler(fitness_value, indiv, cache_file);
+    else if (type == 1) {   // ASSEMBLER
+        return fitness_cache_assembler(fitness_value, indiv, cache_file);
     }
-    else if (type == 2) {
-        //fitness_cache_osaka_string(fitness_value, indiv, cache_file);
+    else if (type == 2) {   // OSAKA_STRING
+        return fitness_cache_osaka_string(fitness_value, indiv, cache_file);
     }
-    else if (type == 3) {
+    else if (type == 3) {   // LLVM_PASS
         return fitness_cache_llvm_pass(fitness_value, indiv, cache_file);
     }
-	else if (type == 4) {
-		//fitness_cache_binary_up_to_512(fitness_value, indiv, cache_file);
+	else if (type == 4) {   // BINARY_UP_TO_512
+		return fitness_cache_binary_up_to_512(fitness_value, indiv, cache_file);
 	}
 
 }
@@ -690,19 +982,20 @@ double fitness_top(node_str* indiv, bool vis, char* test_file, char** src_files,
 
     osaka_object_typ type = OBJECT_TYPE(indiv);
 
-    if (type == 0) {
+    // the fitness function depends on the object type
+    if (type == 0) {    // SIMPLE
         return fitness_simple(indiv, vis);
     }
-    else if (type == 1) {
+    else if (type == 1) {   // ASSEMBLER
         return fitness_assembler(indiv, vis);
     }
-    else if (type == 2) {
+    else if (type == 2) {   // OSAKA_STRING
         return fitness_osaka_string(indiv, vis);
     }
-    else if (type == 3) {
+    else if (type == 3) {   // LLVM_PASS
         return fitness_llvm_pass(indiv, test_file, src_files, num_src_files, vis, cache, cache_file);
     }
-	else if (type == 4) {
+	else if (type == 4) {   // BINARY_UP_TO_512
 		return fitness_binary_up_to_512(indiv, vis);
 	}
     else {

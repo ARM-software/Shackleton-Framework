@@ -58,6 +58,71 @@ uint32_t (*fpfitness_binary_up_to_512)(node_str *n, bool vis);
 /*
  * NAME
  *
+ *   fitness_pre_cache_simple
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes the control values for fitness using LLVM opt
+ *
+ * PARAMETERS
+ *
+ *  char* folder - the main run folder that the control will be saved to
+ *  char* bool - whether or not caching is being used
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (object_type == SIMPLE) {
+ *     fitness_pre_cache_simple(main_folder, test_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_pre_cache_simple(char* folder, bool cache);
+
+/*
+ * NAME
+ *
+ *   fitness_cache_simple
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes an individual along with their fitness
+ *
+ * PARAMETERS
+ *
+ *  double fitness - the fitness of the individual in question
+ *  node_str* indiv - the individual that is to be evaluated
+ *  char* cache_file - the file that will hold the outputted information
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (cache) {
+ *     fitness_cache_simple(fit, indiv, cache_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_cache_simple(double fitness, node_str* indiv, char* cache_file);
+
+/*
+ * NAME
+ *
  *   fitness_simple
  *
  * DESCRIPTION
@@ -89,6 +154,71 @@ uint32_t fitness_simple(node_str* indiv, bool vis);
 /*
  * NAME
  *
+ *   fitness_pre_cache_assembler
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes the control values for fitness using LLVM opt
+ *
+ * PARAMETERS
+ *
+ *  char* folder - the main run folder that the control will be saved to
+ *  char* bool - whether or not caching is being used
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (object_type == ASSEMBLER) {
+ *     fitness_pre_cache_assembler(main_folder, test_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_pre_cache_assembler(char* folder, bool cache);
+
+/*
+ * NAME
+ *
+ *   fitness_cache_assembler
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes an individual along with their fitness
+ *
+ * PARAMETERS
+ *
+ *  double fitness - the fitness of the individual in question
+ *  node_str* indiv - the individual that is to be evaluated
+ *  char* cache_file - the file that will hold the outputted information
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (cache) {
+ *     fitness_cache_assembler(fit, indiv, cache_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_cache_assembler(double fitness, node_str* indiv, char* cache_file);
+
+/*
+ * NAME
+ *
  *   fitness_assembler
  *
  * DESCRIPTION
@@ -116,6 +246,71 @@ uint32_t fitness_simple(node_str* indiv, bool vis);
  */
 
 uint32_t fitness_assembler(node_str* indiv, bool vis);
+
+/*
+ * NAME
+ *
+ *   fitness_pre_cache_osaka_string
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes the control values for fitness using LLVM opt
+ *
+ * PARAMETERS
+ *
+ *  char* folder - the main run folder that the control will be saved to
+ *  char* bool - whether or not caching is being used
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (object_type == OSAKA_STRING) {
+ *     fitness_pre_cache_osaka_string(main_folder, test_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_pre_cache_osaka_string(char* folder, bool cache);
+
+/*
+ * NAME
+ *
+ *   fitness_cache_osaka_string
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes an individual along with their fitness
+ *
+ * PARAMETERS
+ *
+ *  double fitness - the fitness of the individual in question
+ *  node_str* indiv - the individual that is to be evaluated
+ *  char* cache_file - the file that will hold the outputted information
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (cache) {
+ *     fitness_cache_osaka_string(fit, indiv, cache_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_cache_osaka_string(double fitness, node_str* indiv, char* cache_file);
 
 /*
  * NAME
@@ -183,39 +378,6 @@ void fitness_pre_cache_llvm_pass(char* folder, char* test_file, char** src_files
 /*
  * NAME
  *
- *   fitness_cache_llvm_pass
- *
- * DESCRIPTION
- *
- *  Creates a file that describes an individual along with their fitness
- *
- * PARAMETERS
- *
- *  double fitness - the fitness of the individual in question
- *  node_str* indiv - the individual that is to be evaluated
- *  char* cache_file - the file that will hold the outputted information
- *
- * RETURN
- *
- *  none
- *
- * EXAMPLE
- *
- * if (cache) {
- *     fitness_cache_llvm_pass(fit, indiv, cache_file);   
- * }
- *
- * SIDE-EFFECT
- *
- * none
- *
- */
-
-void fitness_cache_llvm_pass(double fitness, node_str* indiv, char* cache_file);
-
-/*
- * NAME
- *
  *   fitness_llvm_pass
  *
  * DESCRIPTION
@@ -243,6 +405,71 @@ void fitness_cache_llvm_pass(double fitness, node_str* indiv, char* cache_file);
  */
 
 double fitness_llvm_pass(node_str* indiv, char* file, char** src_files, uint32_t num_src_files, bool vis, bool cache, char* cache_file);
+
+/*
+ * NAME
+ *
+ *   fitness_pre_cache_binary_up_to_512
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes the control values for fitness using LLVM opt
+ *
+ * PARAMETERS
+ *
+ *  char* folder - the main run folder that the control will be saved to
+ *  char* bool - whether or not caching is being used
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (object_type == BINARY_UP_TO_512) {
+ *     fitness_pre_cache_llvm_pass(main_folder, test_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_pre_cache_binary_up_to_512(char* folder, bool cache);
+
+/*
+ * NAME
+ *
+ *   fitness_cache_binary_up_to_512
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes an individual along with their fitness
+ *
+ * PARAMETERS
+ *
+ *  double fitness - the fitness of the individual in question
+ *  node_str* indiv - the individual that is to be evaluated
+ *  char* cache_file - the file that will hold the outputted information
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (cache) {
+ *     fitness_cache_binary_up_to_512(fit, indiv, cache_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_cache_binary_up_to_512(double fitness, node_str* indiv, char* cache_file);
 
 /*
  * NAME

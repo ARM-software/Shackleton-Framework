@@ -48,35 +48,6 @@
 /*
  * NAME
  *
- *  create_getJSON
- *
- * DESCRIPTION
- *
- *  Creates a cJSON item from a filename given
- *
- * PARAMETERS
- *
- *  char* filename
- *
- * RETURN
- *
- *  none
- *
- * EXAMPLE
- *
- * cJSON *json = create_getJSON(filename);
- *
- * SIDE-EFFECT
- *
- *  mallocs, must be freed
- *
- */
-
-cJSON* create_getJSON(char* filename);
-
-/*
- * NAME
- *
  *   header_module_h
  *
  * DESCRIPTION
@@ -118,7 +89,7 @@ void header_module_h(char* name, char* header);
  * PARAMETERS
  *
  *  char* name
- *  char* header
+ *  char* c_header
  *
  * RETURN
  *
@@ -134,7 +105,7 @@ void header_module_h(char* name, char* header);
  *
  */
 
-void header_module_c(char* name, char* header);
+void header_module_c(char* name, char* c_header);
 
 /*
  * NAME

@@ -100,7 +100,7 @@ void header_module_h(char* name, char* header) {
  * PARAMETERS
  *
  *  char* name
- *  char* header
+ *  char* c_header
  *
  * RETURN
  *
@@ -329,7 +329,7 @@ void create_new_structs(char* name, char* new_structs, cJSON* root) {
  *
  * EXAMPLE
  *
- * create_new_type(name, object, params_json)
+ * create_new_type(name, object, params_json);
  *
  * SIDE-EFFECT
  *

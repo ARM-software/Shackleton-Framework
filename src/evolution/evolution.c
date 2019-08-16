@@ -84,6 +84,7 @@ void evolution_cache_generation(char* main_folder, uint32_t gen, uint32_t pop_si
     strcat(directory_name, "/generation_");
     strcat(directory_name, generation_num);
 
+    // for each individual, must create a file to cache their information
     for (int i = 0; i < pop_size; i++) {
 
         char individual_num[4];
@@ -100,6 +101,7 @@ void evolution_cache_generation(char* main_folder, uint32_t gen, uint32_t pop_si
 
     }
 
+    // add additional file for best individual in the generation
     char best_file[100];
     strcpy(best_file, directory_name);
     strcat(best_file, "/best_individual.txt");
@@ -107,10 +109,12 @@ void evolution_cache_generation(char* main_folder, uint32_t gen, uint32_t pop_si
     uint32_t winner = 0;
     double winner_value = fitness_values[0];
 
+    // printing out fitness values for user's convenience, a sanity check
     for (uint32_t i = 0; i < pop_size; i++) {
         printf("\n\nfitness for %d is %f\n", i, fitness_values[i]);
     }
 
+    // actually finding the individual with the best fitness
     for (uint32_t j = 1; j < pop_size; j++) {
         if (selection_compare_fitness(fitness_values[j], winner_value, ot)) {
             winner = j;
@@ -231,6 +235,7 @@ void evolution_create_new_gen_folder(char* main_folder, uint32_t gen) {
     sprintf(generation_num, "%d", gen);
     strcat(new_directory_name, generation_num);
 
+    // we are only making the directory, not adding anything to it
     strcpy(new_directory, "mkdir ");
     strcat(new_directory, new_directory_name);
 
