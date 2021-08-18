@@ -72,6 +72,14 @@ void simple_randomizeobject(object_simple_str *o) {
 
 }
 
+// NOTE: still random
+void simple_setobject(object_simple_str *o, char* pass) {
+
+    SUBTYPE(o) = (int) rand();
+    INTEGER(o) = (int) rand();
+
+}
+
 void simple_printobject(object_simple_str *o)   {
 
     printf("subtype : %d ; ",SUBTYPE(o));

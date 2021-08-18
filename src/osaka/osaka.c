@@ -318,9 +318,10 @@ node_str *osaka_findheadnode(node_str *n) {
 
 node_str *osaka_addnodetotail(node_str *r,node_str *n)  {
 
+    if (n==NULL){
+        return r;
+    }
     node_str *tail;
-
-    assert(n!=NULL);
     assert(r!=NULL);
 
     tail=osaka_findtailnode(r);
@@ -843,6 +844,19 @@ void osaka_randomizenode(node_str *n) {
 
 }
 
+
+void osaka_setnode(node_str *n, char* pass) {
+
+
+    if (n == NULL)  {
+        printf ("error: cannot randomize a NULL node");
+        exit(0);
+    }
+
+    object_table_function[OBJECT_TYPE(n)].osaka_setobject(OBJECT(n), pass);
+
+}
+
 /*
  * NAME
  *
@@ -1167,10 +1181,15 @@ node_str *osaka_deserialize(char *filepath) {
  */
 
 bool osaka_compare(node_str *n0, node_str *n1)  {
-
     while(n0!=NULL && n1!=NULL) {
-        if(OBJECT_TYPE(n0)!=OBJECT_TYPE(n1) && UID(n0)!=UID(n1))  {
-            printf ("type %d==%d and uid %d==%d\n",OBJECT_TYPE(n0),OBJECT_TYPE(n1),UID(n0),UID(n1));
+        if(OBJECT_TYPE(n0)!=OBJECT_TYPE(n1))  { 
+            return false;
+        }
+        if (OBJECT_TYPE(n0) != 3 && UID(n0)!=UID(n1)) {
+            return false;
+        }
+        if (OBJECT_TYPE(n0) == 3 && !object_table_function[OBJECT_TYPE(n0)].osaka_compareobject(OBJECT(n0), OBJECT(n1))) {
+            //printf("llvm pass not equal: %s(%d) != %s(%d)\n", PASS(OBJECT(n0)), PASS_INDEX(OBJECT(n0)), PASS(OBJECT(n1)), PASS_INDEX(OBJECT(n1)));
             return false;
         }
 

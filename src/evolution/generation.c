@@ -111,13 +111,53 @@ node_str* generate_new_individual(uint32_t individual_size, osaka_object_typ osa
     
     node_str *head = generate_new_initialized_node(osaka_type);
 
+    if (individual_size == 0) {
+        individual_size = rand() % 80 + 10;
+    }
+
     // add as many nodes as is the individual_size to the single individual
     for (uint32_t k = 0; k < individual_size - 1; k++) {
         head = osaka_addnodetotail(head, generate_new_initialized_node(osaka_type));
     }
-
     return head;
+}
 
+node_str** generate_level_passes(const int num_levels, osaka_object_typ osaka_type) {
+    if (osaka_type != 3) {
+        printf("Function not allowed in the current object type, returning NULL\n");
+        return NULL;
+    }
+    int* default_string_lengths = llvm_default_level_string_lengths(num_levels);
+    char*** default_strings = llvm_set_default_level_strings(default_string_lengths, num_levels);
+    node_str** level_passes = malloc(sizeof(node_str*) * num_levels);
+    for (uint32_t l = 0; l < num_levels; l++) {
+        level_passes[l] = generate_individual_from_default(default_strings[l], default_string_lengths[l], osaka_type);
+    }
+    free(default_string_lengths);
+    for (int l = 0; l < num_levels; l++) {
+        free(default_strings[l]);
+    }
+    free(default_strings);
+    return level_passes;
+}
+
+node_str* generate_individual_from_default(char** passes, int num_passes, osaka_object_typ osaka_type) {
+    node_str *head = generate_find_node(passes[0], osaka_type);
+    // add as many nodes as is the individual_size to the single individual
+    for (int p = 1; p < num_passes; p++) {
+        //printf("%s\n", passes[p]);
+        head = osaka_addnodetotail(head, generate_find_node(passes[p], osaka_type));
+    }
+    return head;
+    // for each pass, find the node using valid pass, if pass exists in valid pass, add to individual
+}
+
+// same level as `node_str* generate_new_initialized_node(osaka_object_typ osaka_type)`
+node_str* generate_find_node(char* pass, osaka_object_typ osaka_type) {
+    node_str* new_node = osaka_createnode(NULL, HEAD, osaka_type);
+    osaka_setnode(new_node, pass);
+    //llvm_pass_set_object_from_pass(object_llvm_pass_str* o, char* pass)
+    return new_node;
 }
 
 /*
@@ -151,16 +191,37 @@ node_str* generate_new_individual(uint32_t individual_size, osaka_object_typ osa
  *
  */
 
-void generate_new_generation(node_str** gen, uint32_t generation_size, uint32_t individual_size, osaka_object_typ osaka_type) {
-
+void generate_new_generation(node_str** gen, uint32_t population_size, uint32_t individual_size, osaka_object_typ osaka_type, bool gi, const char** levels, const int num_levels) {
     // each index in the array is a pointer to the head of an osaka structure
-    for (uint32_t g = 0; g < generation_size; g++) {
-
-        gen[g] = generate_new_individual(individual_size, osaka_type);
-
+    int num_gi = gi ? population_size/2 : 0;
+    node_str** level_passes = generate_level_passes(num_levels, osaka_type);
+    for (uint32_t g = 0; g < num_gi; g++) {
+        uint32_t rand_level_ind = (uint32_t) (num_levels * (rand() / (RAND_MAX + 1.0)));
+        char level[10];
+        strcpy(level, levels[rand_level_ind]);
+        node_str* level_pass = osaka_copylist(level_passes[rand_level_ind]);
+        /*
+        uint32_t temp_mutation1 = (uint32_t) (100 * (rand() / (RAND_MAX + 1.0)));
+        if (temp_mutation1 <= mut_perc) {
+            uint32_t indiv_size_1 = osaka_listlength(level_pass);
+            uint32_t random = (uint32_t) (indiv_size_1 * (rand() / (RAND_MAX + 1.0))) + 1;
+            mutation_single_unit_all_params(level_pass, random, vis);
+        }*/
+        // randomly select a default optimization level and mutate it to add to the generation
+        gen[g] = level_pass;
+    }
+    for (uint32_t g = num_gi; g < population_size; g++) {
+        node_str* new_seq = generate_new_individual(individual_size, osaka_type);
+        gen[g] = new_seq;
+        //gen_id[g] = (*max_id_ptr)++;
     }
 
+    generate_free_generation(level_passes, num_levels);
+    free(level_passes);
 }
+
+
+
 
 /*
  * NAME
@@ -194,11 +255,46 @@ void generate_new_generation(node_str** gen, uint32_t generation_size, uint32_t 
  */
 
 void generate_copy_generation(node_str** orig, node_str** copy, uint32_t generation_size) {
+    for (int i = 0; i < generation_size; i++) {
+        copy[i] = osaka_copylist(orig[i]);
+    }
+}
+
+/*
+ * NAME
+ *
+ *   generate_copy_gen_id
+ *
+ * DESCRIPTION
+ *
+ *  Given an existing generation and some details about it,
+ *  copies all of its contents over, with entirely new created nodes
+ *  to a new generation object
+ *
+ * PARAMETERS
+ *
+ *  node_str** orig -- pointer to generation of osaka_structures
+ *  uint32_t generation_size -- number of individuals in generation
+ *  node_str** copy -- pointer to head of empty generation to hold copy
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * generate_copy_gen_id(original, copy, size);
+ *
+ * SIDE-EFFECT
+ *
+ *  creates new list of osaka structures that must be freed later
+ *
+ */
+
+void generate_copy_gen_id(int* orig, int* copy, uint32_t generation_size) {
 
     for (int i = 0; i < generation_size; i++) {
-
-        copy[i] = osaka_copylist(orig[i]);
-
+        copy[i] = orig[i];
     }
 
 }
@@ -236,8 +332,12 @@ void generate_free_individual(node_str* indiv) {
     uint32_t list_length = osaka_listlength(indiv);
 
     for (uint32_t i = list_length; i > 0; i--) {
-
-        osaka_deletenode(osaka_nthnode(indiv, i));
+        if (indiv != NULL) {
+            osaka_deletenode(osaka_nthnode(indiv, i));
+        }
+        else {
+            printf("inside generate_free_individual, indiv %d== NULL\n", i);
+        }
 
     }
 
@@ -325,7 +425,7 @@ void generate_free_generation(node_str** generation, uint32_t gen_size) {
     for (uint32_t g = 0; g < gen_size; g++) {
 
         generate_free_individual(generation[g]);
-    
+        //printf("Freed individual #%d of %d in the generation\n", g, gen_size);
     } 
 
 }

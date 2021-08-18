@@ -227,4 +227,9 @@ void visualization_print_individual_concise_details_from_nth(node_str* indiv, ui
 
 void visualization_print_individual_concise_details_from_nth_to_mth(node_str* indiv, uint32_t nth, uint32_t mth);
 
+void vis_print_parents(bool vis, node_str** offsprings);
+void vis_best_node(bool vis, node_str* final_node);
+void vis_print_gen(bool vis, bool end_of_gen, node_str** current_generation, uint32_t gen_idx, uint32_t pop_size);
+void vis_itr(bool vis, int it, int gen);
+
 #endif /* SUPPORT_VISUALIZATION_H_ */

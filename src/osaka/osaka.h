@@ -624,6 +624,8 @@ void osaka_freenode(node_str *n);
 
 void osaka_randomizenode(node_str *n);
 
+void osaka_setnode(node_str *n, char* pass);
+
 /*
  * NAME
  *

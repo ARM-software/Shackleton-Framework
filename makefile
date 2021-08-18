@@ -30,7 +30,7 @@ DIR := .
 SRCDIR := ./src
 
 OBJDIR := obj
-OBJS := $(addprefix $(OBJDIR)/,main.o osaka.o modules.o simple.o osaka_test.o assembler.o osaka_string.o llvm_pass.o binary_up_to_512.o evolution.o crossover.o mutation.o generation.o fitness.o selection.o utility.o cJSON.o visualization.o llvm.o test.o)
+OBJS := $(addprefix $(OBJDIR)/,main.o osaka.o modules.o simple.o osaka_test.o assembler.o osaka_string.o llvm_pass.o binary_up_to_512.o evolution.o crossover.o mutation.o generation.o fitness.o selection.o utility.o cJSON.o visualization.o llvm.o test.o indivdata.o cache.o)
                 
 osaka : $(OBJS)
 	cc -o shackleton $(OBJS)
@@ -96,6 +96,12 @@ $(OBJDIR)/llvm.o : $(SRCDIR)/support/llvm.c $(SRCDIR)/support/llvm.h
 
 $(OBJDIR)/test.o : $(SRCDIR)/support/test.c $(SRCDIR)/support/test.h
 	cc -c $(SRCDIR)/support/test.c -o $@ 
+
+$(OBJDIR)/indivdata.o : $(SRCDIR)/evolution/indivdata.c $(SRCDIR)/evolution/indivdata.h
+	cc -c $(SRCDIR)/evolution/indivdata.c -o $@
+
+$(OBJDIR)/cache.o : $(SRCDIR)/support/cache.c $(SRCDIR)/support/cache.h
+	cc -c $(SRCDIR)/support/cache.c -o $@ 
 
 clean :
 	rm $(OBJS)

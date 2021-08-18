@@ -63,6 +63,7 @@ typedef struct object_simple_str    {
 object_simple_str *simple_createobject(void);
 
 void simple_randomizeobject(object_simple_str *o);
+void simple_setobject(object_simple_str *o, char* pass);
 
 void simple_printobject(object_simple_str *o);
 

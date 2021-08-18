@@ -49,12 +49,14 @@ typedef struct object_functions_str {
     char name[25];
     object_simple_str *(*osaka_createobject)(void);
     void *(*osaka_randomizeobject)(void *);
+    void *(*osaka_setobject)(void *, char*);
     void (*osaka_deleteobject)(void *);
     void (*osaka_printobject)(void *);     
     void (*osaka_writeobject)(FILE *stream,void *);
     void *(*osaka_readobject)(FILE *stream);
     void *(*osaka_copyobject)(void *);
     void (*osaka_describeobject)(char *, void *);         // Will be used for caching functionality, WIP
+    bool (*osaka_compareobject)(void *object_ptr1, void *object_ptr2);
 } object_functions_str;
 
 /*
