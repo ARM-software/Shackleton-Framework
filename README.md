@@ -4,6 +4,7 @@
 
 **Synopsis**
 
+**NOTE: We are in the process of reviewing changes to this framework located in the shackleton-2.0 branch on this repository. Until this message is removed, please refer to that branch for the most up-to-date code (still under review).**
 
 *  **Project Shackleton** goal is to build a modular designed Linear Genetic Programming (LGP) framework to automate the discovery of optimal software solutions for hard low-level software optimization problems. Idea to is a apply LGP to a Generic Genetic Object (GGO). The GGO by default is set to AArch64 instructions but support is in place for LLVM Intermediate Code.
 *  Once complete the Shackleton framework can be used to explore any low-level software optimization problem as long as the optimal answer can be defined either as an objective or multi-objectives (pareto curve) with constraints. The framework itself works with GGO’s.
