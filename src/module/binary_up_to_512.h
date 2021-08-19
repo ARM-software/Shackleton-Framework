@@ -96,6 +96,7 @@ void binary_up_to_512_binary_set_valid_values(object_binary_up_to_512_str* o);
 object_binary_up_to_512_str *binary_up_to_512_createobject(void);
 
 void binary_up_to_512_randomizeobject(object_binary_up_to_512_str *o);
+void binary_up_to_512_setobject(object_binary_up_to_512_str *o, char* pass);
 
 void binary_up_to_512_printobject(object_binary_up_to_512_str *o);
 

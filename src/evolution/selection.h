@@ -151,6 +151,6 @@ bool selection_compare_fitness(double fitness1, double fitness2, osaka_object_ty
  *
  */
 
-uint32_t selection_tournament(node_str** population, double* fitness_values_all, node_str* result, uint32_t pop_size, uint32_t tournament_size, bool vis, char* file);
+uint32_t selection_tournament(node_str** population, double* fitness_values_all, node_str* result, uint32_t pop_size, uint32_t tournament_size, bool vis);
 
 #endif /* EVOLUTION_SELECTION_H_ */

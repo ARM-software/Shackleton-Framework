@@ -94,4 +94,15 @@ You are now ready to build the Shackleton tool. In the terminal, go to the top l
 
 For any questions or comments for the creator of this tool, please message hpeeler@utexas.edu. This tool was intially created during a summer internship at Arm Ltd. in collaboration with professor [Wolfgang Banzhaf](http://www.cse.msu.edu/~banzhafw/) and postdoc [Yuan Yuan](https://www.researchgate.net/profile/Yuan_Yuan73) out of Michigan State University.
 
-Many thanks to Stella Li (John Hopkins University, sli136@jhu.edu) for her work to enhance this framework during her 2021 summer internship in collaboration between Arm and Michigan State Unviversity. At time of writing this addition, her additions and edits are in final preparation for reflection in this repository. This closing message will be edited once the changes are final and pushed to this repository.
+Stella Li (John Hopkins University, sli136@jhu.edu) enhanced this framework during her 2021 summer internship in collaboration between Arm and Michigan State Unviversity. Below is a list of enhancements in Shackleton 2.0: 
+
+- Elitism (percentage specified as parameter)
+- New randomly generated individuals
+- New offspring selection mechanism
+- Unique ID for each individual
+- Data structure containing individual information
+- Fitness lookup from table
+- Overhead runtime evaluation
+- Noise reduction by increasing number of evalutaions
+- Early termination mechanism
+- Genetic Improvement

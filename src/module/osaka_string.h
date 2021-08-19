@@ -74,6 +74,7 @@ void osaka_string_set_valid_values(object_osaka_string_str* o);
 object_osaka_string_str *osaka_string_createobject(void);
 
 void osaka_string_randomizeobject(object_osaka_string_str *o);
+void osaka_string_setobject(object_osaka_string_str* o, char* pass);
 
 void osaka_string_printobject(object_osaka_string_str *o);
 

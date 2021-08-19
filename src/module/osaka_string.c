@@ -112,6 +112,25 @@ void osaka_string_randomizeobject(object_osaka_string_str* o) {
 
 }
 
+// NOTE: still random
+void osaka_string_setobject(object_osaka_string_str* o, char* pass) {
+    
+    if (CONSTRAINED(o)) {
+
+        int num_valid_values = NUM_VALID_VALUES(o);
+        int new_item = (int) (num_valid_values * (rand() / (RAND_MAX + 1.0)));
+        MY_STRING(o) = MY_STRING_VALID_VALUES(o)[new_item];
+
+    }
+    else {
+        
+        int rand_length = (int) (20 * (rand() / (RAND_MAX + 1.0)));
+        MY_STRING(o) = randomString(rand_length);
+
+    }
+
+}
+
 void osaka_string_printobject(object_osaka_string_str *o)   {
 
     printf("string : %s", MY_STRING(o));

@@ -71,7 +71,7 @@
 
 str2int_errno str2int(uint32_t *out, char *s, uint32_t base) {
 
-    char *end;
+    char *end = s+strlen(s);
 
     if (s[0] == '\0' || isspace(s[0])) {
 
@@ -84,17 +84,17 @@ str2int_errno str2int(uint32_t *out, char *s, uint32_t base) {
 
     /* Both checks are needed because INT_MAX == LONG_MAX is possible. */
     if (l > INT_MAX || (errno == ERANGE && l == LONG_MAX)) {
-        
+        printf("overflow\n");
         return STR2INT_OVERFLOW;
 
     }
     if (l < INT_MIN || (errno == ERANGE && l == LONG_MIN)) {
-
+        printf("underflow\n");
         return STR2INT_UNDERFLOW;
 
     }
     if (*end != '\0') {
-
+        printf("inconvertible\n");
         return STR2INT_INCONVERTIBLE;
 
     }
@@ -440,6 +440,7 @@ char *randomString(uint32_t length) {
  *  uint32_t pop_size
  *  uint32_t perc_cross
  *  uint32_t perc_mut
+ *  uint32_t perc_elite
  *  uint32_t tourn_size
  *  bool vis
  *
@@ -457,22 +458,27 @@ char *randomString(uint32_t length) {
  *
  */
 
-void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_cross, uint32_t *perc_mut, uint32_t *tourn_size, bool *vis) {
+void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_cross, uint32_t *perc_mut, uint32_t *perc_elite, uint32_t *tourn_size, bool *vis, char* param_file) { //added 6/4/2021
+//void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_cross, uint32_t *perc_mut, uint32_t *tourn_size, bool *vis) {
 
     FILE *file;
     char* line = NULL;
     size_t len = 0;
     size_t read;
 
-    char filename[30];
-    strcpy(filename, "src/files/parameters.txt");
+    char filename[100]; 
+    //strcpy(filename, "src/files/parameters.txt");
+    strcpy(filename, "src/files/params/");
+    strcat(filename, param_file);
 
     file = fopen(filename, "r");
 
     if (file == NULL) {
+        printf("file %s does not exist.\n", filename);
         exit(EXIT_FAILURE);
     }
     
+    // printf("Start reading file: \n");
     // read osaka.h line by line
     while ((read = getline(&line, &len, file)) != -1) {
 
@@ -484,43 +490,57 @@ void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_
         while (temp != NULL) {
 
             if (strcmp(temp, "num_generations:") == 0) {
-                printf("\tsetting num_generations from file\n");
+                //printf("\tsetting num_generations from file");
                 temp = strtok(NULL, delim);
-                temp[strlen(temp) - 2] = '\0';
+                temp[strlen(temp) - 1] = '\0';
                 str2int(num_gen, temp, 10);
+                //printf(" = %d\n", *num_gen);
             }
             else if (strcmp(temp, "num_population_size:") == 0) {
-                printf("\tsetting num_population_size from file\n");
+                //printf("\tsetting num_population_size from file");
                 temp = strtok(NULL, delim);
-                temp[strlen(temp) - 2] = '\0';
+                temp[strlen(temp) - 1] = '\0';
                 str2int(pop_size, temp, 10);
+                //printf(" = %d\n", *pop_size);
             }
             else if (strcmp(temp, "percent_crossover:") == 0) {
-                printf("\tsetting percent_crossover from file\n");
+                //printf("\tsetting percent_crossover from file");
                 temp = strtok(NULL, delim);
-                temp[strlen(temp) - 2] = '\0';
+                temp[strlen(temp) - 1] = '\0';
                 str2int(perc_cross, temp, 10);
+                //printf(" = %d\n", *perc_cross);
             }
             else if (strcmp(temp, "percent_mutation:") == 0) {
-                printf("\tsetting percent_mutation from file\n");
+                //printf("\tsetting percent_mutation from file");
                 temp = strtok(NULL, delim);
-                temp[strlen(temp) - 2] = '\0';
+                temp[strlen(temp) - 1] = '\0';
                 str2int(perc_mut, temp, 10);
+                //printf(" = %d\n", *perc_mut);
+            }
+            else if (strcmp(temp, "percent_elite:") == 0) {
+                //printf("\tsetting percent_elite from file");
+                temp = strtok(NULL, delim);
+                temp[strlen(temp) - 1] = '\0';
+                str2int(perc_elite, temp, 10);
+                //printf(" = %d\n", *perc_elite);
             }
             else if (strcmp(temp, "tournament_size:") == 0) {
-                printf("\tsetting tournament_size from file\n");
+                //printf("\tsetting tournament_size from file");
                 temp = strtok(NULL, delim);
-                temp[strlen(temp) - 2] = '\0';
+                temp[strlen(temp) - 1] = '\0';
                 str2int(tourn_size, temp, 10);
+                //printf(" = %d\n", *tourn_size);
             }
             else if (strcmp(temp, "visualization:") == 0) {
-                printf("\tsetting visualization from file\n");
+                printf("\tsetting visualization from file - %s",line);
                 temp = strtok(NULL, delim);
                 if (strcmp(temp, "true") == 0) {
                     *vis = true;
+                    printf(" = true\n");
                 }
                 else {
                     *vis = false;
+                    printf(" = false\n");
                 }
             }
             else {
@@ -535,4 +555,22 @@ void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_
     free(line);
     fclose(file);
 
+}
+
+double calc_var(double* array, double mean, int length) {
+    double square_sum = 0.0;
+    for (int i = 0; i < length; i++) {
+        square_sum += (array[i] - mean) * (array[i] - mean);
+    }
+    double var = square_sum / (length - 1);
+    return var;
+}
+
+bool is_in_list(int num, int* list, int length) {
+    for (int i = 0; i < length; i++) {
+        if (num == list[i]) {
+            return true;
+        }
+    }
+    return false;
 }

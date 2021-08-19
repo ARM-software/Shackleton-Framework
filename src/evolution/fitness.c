@@ -72,7 +72,6 @@
 void fitness_pre_cache_simple(char* folder, bool cache) {
 
     // do nothing, default for now
-
 }
 
 /*
@@ -142,7 +141,7 @@ void fitness_cache_simple(double fitness, node_str* indiv, char* cache_file) {
  */
 
 uint32_t fitness_simple(node_str* indiv, bool vis) {
-
+    
     return 100 * (rand() / (RAND_MAX + 1.0)); 
 
 }
@@ -393,136 +392,352 @@ uint32_t fitness_osaka_string(node_str* indiv, bool vis) {
  *
  */
 
-void fitness_pre_cache_llvm_pass(char* folder, char* test_file, char** src_files, uint32_t num_src_files, bool cache) {
-
-    char build_command[5000];
+void fitness_pre_cache_llvm_pass(char* folder, char* test_file, char** src_files, uint32_t num_src_files, bool cache, double* track_fitness, const char *cache_id, uint32_t num_runs, bool fitness_with_var, const char** levels, const int num_levels) { //added 6/8/2021
+    char build_command[20000];
     strcpy(build_command, "");
+    FILE *track_fitness_file_ptr;
+    double tol = 0.95;
 
-    llvm_form_build_ll_command(src_files, num_src_files, test_file, build_command);
-
-    printf("build command: %s\n\n", build_command);
-
+    llvm_form_build_ll_command(src_files, num_src_files, test_file, build_command, cache_id);
     llvm_run_command(build_command);
 
-    if (cache) {
+    if (!cache) {
+        return;
+    }
 
-        struct timeval start, end; 
-        uint32_t result = 0;
-        uint32_t num_runs = 5;
+    cache_create_baseline_folder(cache, folder);
+    struct timeval start, end; 
+    uint32_t result = 0;
+    uint32_t success_runs = 0;
+    int counter = 0;
 
-        double total_time = 0.0;
-        double time_taken = 0.0;
+    double total_time = 0.0;
+    double time_taken = 0.0;
+    double fitness = 0.0;
 
-        char test_file_name[30];
-        char base_name[60];
-        char time_str[50];
+    char test_file_name[100];
+    char test_file_name_no_path[100];
+    char junk_dir[200];
+    char opt_file[200];
+    char base_file[200];
 
-        char bc_command[1000];
-        char run_command[1000];
-        char opt_command[1000];
+    char opt_command[1000];
+    char bc_command[1000];
+    char run_command[1000];
 
-        strcpy(test_file_name, test_file);
-        char* p = strchr(test_file_name, '.');
+    strcpy(test_file_name, test_file);
+    char* p = strchr(test_file_name, '.');
 
-        strcpy(base_name, "src/files/llvm/");
+    if (!p) {
+        printf("File must have valid extension such as .c or .cpp.\n\nAborting code\n\n");
+        exit(0);
+    }
+    *p = 0;
 
-        if (!p) {
-            printf("File must have valid extension such as .c or .cpp.\n\nAborting code\n\n");
-            exit(0);
-        }
-        *p = 0;
+    strcpy(test_file_name_no_path, "");
+    char *t = strrchr(test_file_name, '/'); 
+    if (!t) {
+        strcpy(test_file_name_no_path, test_file_name);
+    } else strcpy(test_file_name_no_path, t+1);
 
-        strcpy(bc_command, "llvm-as ");
-        strcat(bc_command, base_name);
-        strcat(bc_command, test_file_name);
-        strcat(bc_command, "_linked.ll");
+    strcpy(junk_dir, "src/files/llvm/junk_output/");
+    strcpy(base_file, junk_dir);
+    strcat(base_file, test_file_name_no_path);
+    strcat(base_file, "_");
+    strcat(base_file, cache_id);
 
-        strcpy(run_command, "lli ");
-        strcat(run_command, base_name);
-        strcat(run_command, test_file_name);
-        strcat(run_command, "_linked.bc");
-
-        strcpy(opt_command, "opt ");
-        strcat(opt_command, base_name);
-        strcat(opt_command, test_file_name);
-        strcat(opt_command, "_linked.ll -S -o ");
-        strcat(opt_command, base_name);
-        strcat(opt_command, test_file_name);
-        strcat(opt_command, "_linked_opt.ll");
-
-        printf("\nRunning the commands for no optimizaton\n");
-        llvm_run_command(bc_command);
-
-        for (uint32_t runs = 0; runs < num_runs; runs++) {
-
-            gettimeofday(&start, NULL);
-            result = llvm_run_command(run_command);
-            gettimeofday(&end, NULL);
-
-            time_taken = (end.tv_sec - start.tv_sec) * 1e6;
-            time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
-
-            total_time = total_time + time_taken;
-
-        }
-
-        time_taken = total_time / num_runs;
-        sprintf(time_str, "%f", time_taken);
-
-        char no_opt_file[60];
-        char no_opt_file_str[5000];
-
-        strcpy(no_opt_file, folder);
-        strcat(no_opt_file, "/original_no_optimization.txt");
-        strcpy(no_opt_file_str, "Description for original file with no optimization applied\n\nThe fitness of the individual is the time it takes to complete the testing script provided in seconds. Lower fitness is better.\n\nFitness of this individual: ");
-        strcat(no_opt_file_str, time_str);
-        strcat(no_opt_file_str, " sec");
-
-        FILE* no_opt_file_ptr = fopen(no_opt_file, "w");
-        fputs(no_opt_file_str, no_opt_file_ptr);
-        fclose(no_opt_file_ptr);
-
-        printf("Done. Time taken was %f\n\n", time_taken);
-        time_taken = 0.0;
+    for (int i = 0; i < num_levels; i++) {
         total_time = 0.0;
+        time_taken = 0.0;
+        fitness = 0.0;
+        if (strlen(levels[i]) == 0) {
+            strcpy(opt_command, "");
 
-        printf("\nRunning the commands with optimizaton\n");
+            strcpy(bc_command, "llvm-as ");
+            strcat(bc_command, base_file);
+            strcat(bc_command, "_linked");
+            strcat(bc_command, ".ll");
+
+            strcpy(run_command, "lli ");
+            strcat(run_command, base_file);
+            strcat(run_command, "_linked");
+            strcat(run_command, ".bc");
+        }
+        else {
+            strcpy(opt_file, "");
+            strcat(opt_file, base_file);
+            strcat(opt_file, "_opt_");
+            strcat(opt_file, levels[i]);
+
+            strcpy(opt_command, "");
+            strcat(opt_command, "opt -");
+            strcat(opt_command, levels[i]);
+            strcat(opt_command, " ");
+            strcat(opt_command, base_file);
+            strcat(opt_command, "_linked.ll -S -o ");
+            strcat(opt_command, opt_file);
+            strcat(opt_command, ".ll");
+
+            strcpy(bc_command, "");
+            strcat(bc_command, "llvm-as ");
+            strcat(bc_command, opt_file);
+            strcat(bc_command, ".ll");
+
+            strcpy(run_command, "");
+            strcat(run_command, "lli ");
+            strcat(run_command, opt_file);
+            strcat(run_command, ".bc");
+        }
+        
+        /*printf("\n--------------------LLVM opt level: %s, ALL COMMANDS GENERATED---------------------\n", strlen(levels[i])==0?"no_opt":levels[i]);
+        printf("opt_command: %s\n", opt_command);
+        printf("bc_command: %s\n", bc_command);
+        printf("run_command: %s\n", run_command);*/
+        
         llvm_run_command(opt_command);
         llvm_run_command(bc_command);
 
+        double all_runtime[num_runs]; //Added 7/7/2021
+        success_runs = 0;
+        time_taken = 0.0;
+        total_time = 0.0;
+        counter = 0;
+
         for (uint32_t runs = 0; runs < num_runs; runs++) {
 
             gettimeofday(&start, NULL);
             result = llvm_run_command(run_command);
             gettimeofday(&end, NULL);
-
+            //printf("run command return code: %d\n", result);
+            // Added 6/21/2021
             time_taken = (end.tv_sec - start.tv_sec) * 1e6;
             time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
-
-            total_time = total_time + time_taken;
-
+            //printf("LLVM opt level: %s, run #%d, time taken: %lf\n", strlen(levels[i])==0?"no_opt":levels[i], runs+1, time_taken);
+            if (result == 0) {
+                success_runs++;
+                total_time = total_time + time_taken;
+                all_runtime[counter++] = time_taken;
+                //printf("Time taken: %lf sec.\n", time_taken);
+            }
+            else {
+                //printf("Run exited with code %d (time taken: %lf sec.)\n", result, time_taken);
+            }
         }
+        // Added 6/21/2021
+        /*if (success_runs < num_runs * tol) {
+            //printf("success_runs < num_runs * %f, fitness set to max.\n", tol);
+            time_taken = UINT32_MAX;
+        } else {
+            time_taken = total_time / success_runs;
+        }*/
+        time_taken = total_time / success_runs;
+        if (fitness_with_var) {
+            fitness = time_taken + calc_var(all_runtime, time_taken, success_runs);
+        } else {
+            fitness = time_taken;
+        }
+        printf("LLVM opt level: %s, average time=%lf over %d success runs, fitness=%lf\n", strlen(levels[i])==0?"no_opt":levels[i], time_taken, success_runs, fitness);
+        track_fitness[i] = fitness;  //Added 6/8/2021
+        /*for (int k = 0; k <= i; k++) {
+            printf("%s%lf%s", k==0?"track_fitness=[":"", track_fitness[k], k==i?"]\n":",");
+        }*/
 
-        time_taken = total_time / num_runs;
-        sprintf(time_str, "%f", time_taken);
+        fitness_pre_cache_log_to_summary(i, folder, levels, num_levels, fitness);
 
-        char basic_opt_file[60];
-        char basic_opt_file_str[5000];
-
-        strcpy(basic_opt_file, folder);
-        strcat(basic_opt_file, "/original_basic_optimization.txt");
-        strcpy(basic_opt_file_str, "Description for original file with only basic optimization applied\n\nThe fitness of the individual is the time it takes to complete the testing script provided in seconds. Lower fitness is better.\n\nFitness of this individual: ");
-        strcat(basic_opt_file_str, time_str);
-        strcat(basic_opt_file_str, " sec");
-
-        FILE* basic_opt_file_ptr = fopen(basic_opt_file, "w");
-        fputs(basic_opt_file_str, basic_opt_file_ptr);
-        fclose(basic_opt_file_ptr);
-
-        printf("Done. Time taken was %f\n\n", time_taken);
 
     }
+    return;
+}
 
+void fitness_pre_cache_log_to_summary(int level_ind, char* folder, const char** levels, const int num_levels, double fitness) {
+    // record precache information to /main_folder/track_fitness.csv file
+    char track_fitness_file[300];
+    strcpy(track_fitness_file, folder);
+    strcat(track_fitness_file, "/track_fitness.csv");
+    FILE* track_fitness_file_ptr = fopen(track_fitness_file, "a");
+    if (level_ind == 0) {
+        fprintf(track_fitness_file_ptr, "no_opt,");
+        for (int l = 1; l < num_levels; l++) {
+            fprintf(track_fitness_file_ptr, "%s,", levels[l]);
+        }
+        fprintf(track_fitness_file_ptr, "initial,gen1,gen2,gen3\n");
+    }
+    fprintf(track_fitness_file_ptr, "%lf,", fitness);
+    fclose(track_fitness_file_ptr);
+
+    // record precache information to /main_folder/track_fitness.csv file
+    char test_compare_file[300];
+    strcpy(test_compare_file, folder);
+    strcat(test_compare_file, "/test_compare.csv");
+    FILE* test_compare_ptr = fopen(test_compare_file, "a+");
+    if (level_ind == 0) {
+        fprintf(test_compare_ptr, "gen, no_opt,");
+        for (int l = 1; l < num_levels; l++) {
+            fprintf(test_compare_ptr, "%s,", levels[l]);
+        }
+        fprintf(test_compare_ptr, "shackleton\n0,");
+    }
+    fprintf(test_compare_ptr, "%lf,", fitness);
+    fclose(test_compare_ptr);
+
+    // write each baseline optimization level to its own file inside /main_folder/baseline folder
+    char out_file[300];
+    char out_file_str[5000];
+    char time_str[50];
+    strcpy(out_file, folder);
+    strcat(out_file, "/baseline");
+    if (level_ind == 0) {
+        strcat(out_file, "/original_no_optimization.txt");
+    } else {
+        strcat(out_file, "/default_opt_");
+        strcat(out_file, levels[level_ind]);
+        strcat(out_file, ".txt");
+    }
+    strcpy(out_file_str, "");
+    sprintf(out_file_str, "Level of default LLVM optimization is: %s\n\nThe fitness of the individual is the time it takes to complete the testing script provided in seconds. Lower fitness is better.\n\nFitness of this individual: ", strlen(levels[level_ind])==0?"no optimization":levels[level_ind]);
+    sprintf(time_str, "%f", fitness);
+    strcat(out_file_str, time_str);
+    strcat(out_file_str, " sec");
+
+    FILE* out_file_ptr = fopen(out_file, "w");
+    fputs(out_file_str, out_file_ptr);
+    fclose(out_file_ptr);
+}
+
+
+void fitness_redo_basic(char* folder, char* test_file, bool cache, double* track_fitness, const char *cache_id, uint32_t num_runs, bool fitness_with_var, const char** levels, const int num_levels) {
+    if (!cache) {
+        return;
+    }
+
+    struct timeval start, end; 
+    uint32_t result = 0;
+    uint32_t success_runs = 0;
+    int counter = 0;
+    double total_time = 0.0;
+    double time_taken = 0.0;
+    double fitness = 0.0;
+    double tol = 0.95;
+
+    char test_file_name[100];
+    char test_file_name_no_path[100];
+    char junk_dir[200];
+    char opt_file[200];
+    char base_file[200];
+
+    char opt_command[1000];
+    char bc_command[1000];
+    char run_command[1000];
+
+    strcpy(test_file_name, test_file);
+    char* p = strchr(test_file_name, '.');
+    if (!p) {
+        printf("File must have valid extension such as .c or .cpp.\n\nAborting code\n\n");
+        exit(0);
+    }
+    *p = 0;
+
+    strcpy(test_file_name_no_path, "");
+    char *t = strrchr(test_file_name, '/'); 
+    if (!t) {
+        strcpy(test_file_name_no_path, test_file_name);
+    } else strcpy(test_file_name_no_path, t+1);
+
+    strcpy(junk_dir, "src/files/llvm/junk_output/");
+    strcpy(base_file, junk_dir);
+    strcat(base_file, test_file_name_no_path);
+    strcat(base_file, "_");
+    strcat(base_file, cache_id);
+
+    for (int i = 0; i < num_levels; i++) {
+        total_time = 0.0;
+        time_taken = 0.0;
+        fitness = 0.0;
+        if (strlen(levels[i]) == 0) {
+            strcpy(opt_command, "");
+
+            strcpy(bc_command, "llvm-as ");
+            strcat(bc_command, base_file);
+            strcat(bc_command, "_linked");
+            strcat(bc_command, ".ll");
+
+            strcpy(run_command, "lli ");
+            strcat(run_command, base_file);
+            strcat(run_command, "_linked");
+            strcat(run_command, ".bc");
+        }
+        else {
+            strcpy(opt_file, "");
+            strcat(opt_file, base_file);
+            strcat(opt_file, "_opt_");
+            strcat(opt_file, levels[i]);
+
+            strcpy(opt_command, "");
+            strcat(opt_command, "opt -");
+            strcat(opt_command, levels[i]);
+            strcat(opt_command, " ");
+            strcat(opt_command, base_file);
+            strcat(opt_command, "_linked.ll -S -o ");
+            strcat(opt_command, opt_file);
+            strcat(opt_command, ".ll");
+
+            strcpy(bc_command, "");
+            strcat(bc_command, "llvm-as ");
+            strcat(bc_command, opt_file);
+            strcat(bc_command, ".ll");
+
+            strcpy(run_command, "");
+            strcat(run_command, "lli ");
+            strcat(run_command, opt_file);
+            strcat(run_command, ".bc");
+        }
+        
+        //printf("\n--------------------LLVM opt level: %s, ALL COMMANDS GENERATED---------------------\n", strlen(levels[i])==0?"no_opt":levels[i]);
+        //printf("opt_command: %s\n", opt_command);
+        //printf("bc_command: %s\n", bc_command);
+        //printf("run_command: %s\n", run_command);
+        
+        llvm_run_command(opt_command);
+        llvm_run_command(bc_command);
+
+        double all_runtime[num_runs]; //Added 7/7/2021
+        success_runs = 0;
+        time_taken = 0.0;
+        total_time = 0.0;
+        counter = 0;
+
+        for (uint32_t runs = 0; runs < num_runs; runs++) {
+
+            gettimeofday(&start, NULL);
+            result = llvm_run_command(run_command);
+            gettimeofday(&end, NULL);
+            //printf("run command return code: %d\n", result);
+            // Added 6/21/2021
+            time_taken = (end.tv_sec - start.tv_sec) * 1e6;
+            time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
+            //printf("LLVM opt level: %s, run #%d, time taken: %lf\n", strlen(levels[i])==0?"no_opt":levels[i], runs+1, time_taken);
+            if (result == 0) {
+                success_runs++;
+                total_time = total_time + time_taken;
+                all_runtime[counter++] = time_taken;
+            }
+        }
+        /*if (success_runs < num_runs * tol) {
+            //printf("success_runs < num_runs * %f, fitness set to max.\n", tol);
+            time_taken = UINT32_MAX;
+        } else {
+            time_taken = total_time / success_runs;
+        }*/
+        time_taken = total_time / success_runs;
+        if (fitness_with_var) {
+            fitness = time_taken + calc_var(all_runtime, time_taken, success_runs);
+        } else {
+            fitness = time_taken;
+        }
+        printf("LLVM opt level: %s, average time=%lf over %d success runs, fitness=%lf\n", strlen(levels[i])==0?"no_opt":levels[i], time_taken, success_runs, fitness);
+        track_fitness[i] = fitness;  //Added 6/8/2021
+    }
+    return;
 }
 
 /*
@@ -557,36 +772,16 @@ void fitness_pre_cache_llvm_pass(char* folder, char* test_file, char** src_files
  */
 
 void fitness_cache_llvm_pass(double fitness, node_str* indiv, char* cache_file) {
-
+    //printf("fitness.c:682, fitness_cache, cache_file: %s\n", cache_file);
     char string[30000];
     char fitness_num[100];
     char input_str[10000];
     char output_str[10000];
-    
+
     strcpy(string, "Description file for Individual 1\n\nHere are the passes in this individual, in order:\n\n");
     sprintf(fitness_num, "%f", fitness);
     strcpy(input_str, "");
     strcpy(output_str, "");
-
-    /*FILE *input;
-    FILE *output;
-    char* line = NULL;
-    size_t len = 0;
-    size_t read;
-    input = fopen(input_file, "r");
-    if (input == NULL) {
-        exit(EXIT_FAILURE);
-    }
-    while ((read = getline(&line, &len, input)) != -1) {
-        strcat(input_str, line);
-    }
-    output = fopen(output_file, "r");
-    if (output == NULL) {
-        exit(EXIT_FAILURE);
-    }
-    while ((read = getline(&line, &len, output)) != -1) {
-        strcat(output_str, line);
-    }*/
 
     while (NEXT(indiv) != NULL) {
         char desc[60];
@@ -601,25 +796,21 @@ void fitness_cache_llvm_pass(double fitness, node_str* indiv, char* cache_file) 
     strcpy(desc, "");
     osaka_describenode(desc, indiv);
     strcat(string, desc);
-    /*strcat(string, "\n\nHere is the input file before optimization was applied: \n\n###########################################################################################################################\n\n");
-    strcat(string, input_str);
-    strcat(string, "\n\n###########################################################################################################################\n\n");
-    strcat(string, "And here is the file after optimization: \n\n###########################################################################################################################\n\n");
-    strcat(string, output_str);
-    strcat(string, "\n\n###########################################################################################################################");*/
     strcat(string, "\n\nThe fitness of the individual is the time it takes to complete the testing script provided in seconds after the specified optimization passes are applied. Lower fitness is better.\n\nFitness of this individual: ");
     strcat(string, fitness_num);
     strcat(string, " sec");
 
-    FILE* file_ptr = fopen(cache_file, "w");
-    fputs(string, file_ptr);
+    //printf("fitness.c:737, fitness_cache, cache_file: %s\n", cache_file);
 
+    FILE* file_ptr = fopen(cache_file, "w+");
+    fputs(string, file_ptr);
     //fclose(input);
     //fclose(output);
     fclose(file_ptr);
+    //printf("Done writing to cache file.\n");
 
     //free(line);
-
+    //printf("fitness.c:747, fitness_cache, cache_file: %s\n", cache_file);
 }
 
 /*
@@ -651,23 +842,28 @@ void fitness_cache_llvm_pass(double fitness, node_str* indiv, char* cache_file) 
  *
  */
 
-double fitness_llvm_pass(node_str* indiv, char* file, char** src_files, uint32_t num_src_files, bool vis, bool cache, char* cache_file) {
+double fitness_llvm_pass(node_str* indiv, char* file, char** src_files, uint32_t num_src_files, bool vis, bool cache, char* cache_file, const char *cache_id, DataNode* indiv_data, uint32_t num_runs, int gen, bool fitness_with_var) {
+    
+    double fitness;
+    fitness = indiv_data->fitness;
+    if (!node_reeval_by_chance(indiv_data, gen)) {
+        //printf("----skipped re-evaluation for individual id=%d\n", indiv_data->seq_id);
+        return indiv_data->fitness;
+    }
+    uint32_t success_runs = 0; //Added 6/21/2021
 
-    double fitness = 100.0;
-    uint32_t num_runs = 5;
-
-    char file_name[30];
-    char base_name[60];
-    char input_file[60];
-    char output_file[60];
+    char file_name[300];
+    char base_name[300];
+    char input_file[300];
+    char output_file[300];
+    char base_file[300];
 
     struct timeval start, end; 
     uint32_t result = 0;
+    double tol = 0.95;
 
     strcpy(file_name, file);
     char* p = strchr(file_name, '.');
-
-    strcpy(base_name, "src/files/llvm/");
 
     if (!p) {
         printf("File must have valid extension such as .c or .cpp.\n\nAborting code\n\n");
@@ -675,19 +871,27 @@ double fitness_llvm_pass(node_str* indiv, char* file, char** src_files, uint32_t
     }
     *p = 0;
 
-    strcpy(input_file, base_name);
-    strcat(input_file, file_name);
+    char file_name_no_path[100];
+    strcpy(file_name_no_path, "");
+    char *t = strrchr(file_name, '/'); 
+    if (!t) {
+        strcpy(file_name_no_path, file_name);
+    } else strcpy(file_name_no_path, t+1);
+
+    strcpy(base_file, "");
+    strcat(base_file, "src/files/llvm/junk_output/");
+    strcat(base_file, file_name_no_path);
+    strcat(base_file, "_");
+    strcat(base_file, cache_id);
+
+    strcpy(input_file, base_file);
     strcat(input_file, "_linked.ll");
 
-    strcpy(output_file, base_name);
-    strcat(output_file, "junk_output/");
-    strcat(output_file, file_name);
-    strcat(output_file, "_linked_temp.ll");
+    strcpy(output_file, base_file);
+    strcat(output_file, "_shackleton.ll");
 
     if (vis) {
-
         printf("Calculating fitness of individual\n");
-
     }
 
     char opt_command[5000];
@@ -695,46 +899,63 @@ double fitness_llvm_pass(node_str* indiv, char* file, char** src_files, uint32_t
     strcpy(opt_command, "");
     strcpy(run_command, "");
 
+    //printf("building opt command with input_file=%s, output_file=%s\n\n", input_file, output_file);
+    //printf("input_file: %s\n", input_file);
+    //printf("output_file: %s\n", output_file);
     llvm_form_opt_command(indiv, NULL, 0, input_file, output_file, opt_command);
     llvm_form_exec_code_command_from_ll(output_file, run_command);
-
-    printf("opt command: %s\n\nrun command: %s\n\n", opt_command, run_command);
+    
+    //printf("\nShackleton opt command: %s\n", opt_command);
+    //printf("run command: %s\n", run_command);
 
     llvm_run_command(opt_command);
 
     double total_time = 0.0;
     double time_taken = 0.0;
+    double all_runtime[num_runs]; //Added 7/7/2021
+    int counter = 0; //Added 7/7/2021
 
-    gettimeofday(&start, NULL);
     for (uint32_t runs = 0; runs < num_runs; runs++) {
+
+        //printf("\n-----------------------------------------------------------------------------\n");
+        //printf("Shackleton optimization run %d\n\n", runs+1);
 
         gettimeofday(&start, NULL);
         result = llvm_run_command(run_command);
+        //result = llvm_run_command(basic_opt_run_command);
         gettimeofday(&end, NULL);
-
+        //printf("run command return code: %d\n", result);
+        // Added 6/21/2021
         time_taken = (end.tv_sec - start.tv_sec) * 1e6;
         time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
-
-        total_time = total_time + time_taken;
-
+        //printf("Shackleton opt run #%d, time taken: %lf\n", runs+1, time_taken);
+        if (result == 0) {
+            success_runs++;
+            total_time = total_time + time_taken;
+            //printf("Time taken in current run: %lf sec.\n", time_taken);
+            all_runtime[counter++] = time_taken; //Added 7/7/2021
+        }
+        else {
+            //printf("Run exited with code %d (time taken: %lf sec.)\n", result, time_taken);
+        }
     }
 
-    time_taken = total_time / num_runs;
+    // Added 6/21/2021
+    if (success_runs < num_runs * tol) {
+        //printf("success_runs < num_runs*%f, fitness set to max.\n", tol);
+        time_taken = UINT32_MAX;
+    } else {
+        time_taken = total_time / success_runs;
+        //printf("average time taken: %lf\n", time_taken);
+    }
 
-    printf("Run command took %f seconds to run, on average over %d runs\n\n", time_taken, num_runs);
-    fitness = time_taken;
-    if (result > 0) {
-
-        fitness = UINT32_MAX;
+    fitness = node_record_data(indiv_data, indiv, all_runtime, time_taken, success_runs, gen, fitness_with_var);
+    //fitness = node_look_up_fitness(indiv_data, indiv, all_runtime, time_taken, success_runs);
+    //printf("Average time: %lf over %d success runs, fitness=%lf\n", time_taken, success_runs, fitness);
     
-    }
-
-    if (cache) {
-
+    /*if (cache) {
         fitness_cache_llvm_pass(fitness, indiv, cache_file);
-
-    }
-
+    }*/
     return fitness;
 
 }
@@ -878,23 +1099,25 @@ uint32_t fitness_binary_up_to_512(node_str* indiv, bool vis) {
  *
  */
 
-void fitness_pre_cache(char* folder, char* test_file, char** src_files, uint32_t num_src_files, osaka_object_typ type, bool cache) {
-
+void fitness_pre_cache(char* folder, char* test_file, char** src_files, uint32_t num_src_files, osaka_object_typ type, bool cache, double* track_fitness, const char *cache_id, uint32_t num_runs, bool fitness_with_var, const char** levels, const int num_levels) { //added 6/8/2021
+//double fitness_pre_cache(char* folder, char* test_file, char** src_files, uint32_t num_src_files, osaka_object_typ type, bool cache) { //added 6/2/2021
+//void fitness_pre_cache(char* folder, char* test_file, char** src_files, uint32_t num_src_files, osaka_object_typ type, bool cache) {
     if (type == 0) {    // SIMPLE
-        return fitness_pre_cache_simple(folder, cache);
+        fitness_pre_cache_simple(folder, cache);
     }
     else if (type == 1) {   // ASSEMBLER
-        return fitness_pre_cache_assembler(folder, cache);
+        fitness_pre_cache_assembler(folder, cache);
     }
     else if (type == 2) {   // OSAKA_STRING
-        return fitness_pre_cache_osaka_string(folder, cache);
+        fitness_pre_cache_osaka_string(folder, cache);
     }
     else if (type == 3) { // LLVM_PASS
-        return fitness_pre_cache_llvm_pass(folder, test_file, src_files, num_src_files, cache);
+        fitness_pre_cache_llvm_pass(folder, test_file, src_files, num_src_files, cache, track_fitness, cache_id, num_runs, fitness_with_var, levels, num_levels); //added 6/8/2021
+        //return fitness_pre_cache_llvm_pass(folder, test_file, src_files, num_src_files, cache);  //added 6/2/2021
     }
-	else if (type == 4) { // BINARY_UP_TO_512
-		return fitness_pre_cache_binary_up_to_512(folder, cache);
-	}
+    else if (type == 4) { // BINARY_UP_TO_512
+        fitness_pre_cache_binary_up_to_512(folder, cache);
+    }
 
 }
 
@@ -928,7 +1151,7 @@ void fitness_pre_cache(char* folder, char* test_file, char** src_files, uint32_t
  */
 
 void fitness_cache(double fitness_value, node_str* indiv, char* cache_file) {
-
+    //printf("fitness.c:1101, fitness_cache, cache_id: %s\n", cache_id);
     osaka_object_typ type = OBJECT_TYPE(indiv);
 
     if (type == 0) {    // SIMPLE
@@ -978,7 +1201,7 @@ void fitness_cache(double fitness_value, node_str* indiv, char* cache_file) {
  *
  */
 
-double fitness_top(node_str* indiv, bool vis, char* test_file, char** src_files, uint32_t num_src_files, bool cache, char* cache_file) {
+double fitness_top(node_str* indiv, bool vis, char* test_file, char** src_files, uint32_t num_src_files, bool cache, char* cache_file, const char *cache_id, DataNode* indiv_data, uint32_t num_runs, int gen, bool fitness_with_var) {
 
     osaka_object_typ type = OBJECT_TYPE(indiv);
 
@@ -993,7 +1216,7 @@ double fitness_top(node_str* indiv, bool vis, char* test_file, char** src_files,
         return fitness_osaka_string(indiv, vis);
     }
     else if (type == 3) {   // LLVM_PASS
-        return fitness_llvm_pass(indiv, test_file, src_files, num_src_files, vis, cache, cache_file);
+        return fitness_llvm_pass(indiv, test_file, src_files, num_src_files, vis, cache, cache_file, cache_id, indiv_data, num_runs, gen, fitness_with_var);
     }
 	else if (type == 4) {   // BINARY_UP_TO_512
 		return fitness_binary_up_to_512(indiv, vis);
@@ -1041,3 +1264,5 @@ void fitness_setup() {
 	fpfitness_binary_up_to_512 = &fitness_binary_up_to_512;
 
 }
+
+

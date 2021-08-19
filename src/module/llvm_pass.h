@@ -71,12 +71,20 @@ typedef struct object_llvm_pass_str {
 /*
  * ROUTINES
  */
+//void llvm_init_from_list();
+
+void llvm_init_valid_values();
+
+char*** llvm_set_default_level_strings(int* default_string_lengths, const int num_levels);  //added 8/13/21
+int* llvm_default_level_string_lengths(const int num_levels);  //added 8/13/21
 
 void llvm_pass_set_valid_values(object_llvm_pass_str* o);
 
 object_llvm_pass_str *llvm_pass_createobject(void);
 
 void llvm_pass_randomizeobject(object_llvm_pass_str *o);
+void llvm_pass_setobject(object_llvm_pass_str* o, char* pass);  //added 8/13/21
+int llvm_find_pass(char** values, int num_valid_values, char* pass);   //added 8/13/21
 
 void llvm_pass_printobject(object_llvm_pass_str *o);
 
@@ -89,5 +97,7 @@ void llvm_pass_writeobject(FILE *stream,object_llvm_pass_str *o);
 void *llvm_pass_readobject(FILE *stream);
 
 void *llvm_pass_copyobject(object_llvm_pass_str *o);
+
+bool llvm_pass_compareobject(object_llvm_pass_str *o1, object_llvm_pass_str *o2);
 
 #endif /* MODULE_LLVM_PASS_H_ */

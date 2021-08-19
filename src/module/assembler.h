@@ -80,6 +80,7 @@ typedef struct object_assembler_str    {
 object_assembler_str *assembler_createobject(void);
 
 void assembler_randomizeobject(object_assembler_str *o);
+void assembler_setobject(object_assembler_str *o, char* pass);
 
 void assembler_printobject(object_assembler_str *o);
 

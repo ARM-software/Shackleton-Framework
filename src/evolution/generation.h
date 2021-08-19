@@ -38,10 +38,16 @@
  */
 
 #include "../osaka/osaka.h"
+#include "mutation.h"
 
 /*
  * ROUTINES
  */
+
+
+node_str** generate_level_passes(const int num_levels, osaka_object_typ osaka_type);
+node_str* generate_individual_from_default(char** passes_string, int num_passes, osaka_object_typ osaka_type);
+node_str* generate_find_node(char* pass, osaka_object_typ osaka_type);
 
 /*
  * NAME
@@ -134,7 +140,9 @@ node_str* generate_new_individual(uint32_t individual_size, osaka_object_typ osa
  *
  */
 
-void generate_new_generation(node_str** gen, uint32_t generation_size, uint32_t individual_size, osaka_object_typ osaka_type);
+void generate_new_generation(node_str** gen, uint32_t generation_size, uint32_t individual_size, osaka_object_typ osaka_type, bool gi, const char** levels, const int num_levels);
+
+void generate_free_level_passes(char*** level_passes, const int num_levels);
 
 /*
  * NAME
@@ -168,6 +176,39 @@ void generate_new_generation(node_str** gen, uint32_t generation_size, uint32_t 
  */
 
 void generate_copy_generation(node_str** orig, node_str** copy, uint32_t generation_size);
+
+/*
+ * NAME
+ *
+ *   generate_copy_gen_id
+ *
+ * DESCRIPTION
+ *
+ *  Given an existing generation and some details about it,
+ *  copies all of its contents over, with entirely new created nodes
+ *  to a new generation object
+ *
+ * PARAMETERS
+ *
+ *  node_str** orig -- pointer to generation of osaka_structures
+ *  uint32_t generation_size -- number of individuals in generation
+ *  node_str** copy -- pointer to head of empty generation to hold copy
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * generate_copy_gen_id(original, copy, size);
+ *
+ * SIDE-EFFECT
+ *
+ *  creates new list of osaka structures that must be freed later
+ *
+ */
+
+void generate_copy_gen_id(int* orig, int* copy, uint32_t generation_size);
 
 /*
  * NAME

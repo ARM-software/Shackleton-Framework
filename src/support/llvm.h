@@ -147,7 +147,7 @@ void llvm_form_run_command(char* file, char* command);
  *
  */
 
-void llvm_form_build_ll_command(char** src_files, uint32_t num_src_files, char* test_file, char* command);
+void llvm_form_build_ll_command(char** src_files, uint32_t num_src_files, char* test_file, char* command, const char *id);
 
 /*
  * NAME
@@ -247,7 +247,7 @@ void llvm_form_exec_code_command_from_ll(char* file, char* command);
  *
  */
 
-void llvm_form_test_command(char** src_files, uint32_t num_src_files, char* test_file, char* build_command, char* run_command);
+void llvm_form_test_command(char** src_files, uint32_t num_src_files, char* test_file, char* build_command, char* run_command, const char* id);
 
 /*
  * NAME
@@ -277,5 +277,34 @@ void llvm_form_test_command(char** src_files, uint32_t num_src_files, char* test
  */
 
 uint32_t llvm_run_command(char* command);
+
+/*
+ * NAME
+ *
+ *   llvm_clean_up
+ *
+ * DESCRIPTION
+ *
+ *  clean up after a run by deleting generated files with unique id
+ *
+ * PARAMETERS
+ *
+ *  char* id - unique id of that run
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ *  uint32_t result = llvm_clean_up(command);
+ *
+ * SIDE-EFFECT
+ *
+ *  Interfaces with some terminal
+ *
+ */
+
+uint32_t llvm_clean_up(char *file, const char* id, bool cache);
 
 #endif /* SUPPORT_LLVM_H_ */

@@ -87,7 +87,7 @@ void crossover_onepoint_macro(node_str* osaka1, node_str* osaka2, bool vis) {
     }
 
     // we don't want the random number to exceed the length
-    // of the shorted osaka sequence
+    // of the shorter osaka sequence
     if (osaka1_length < osaka2_length) {
         while (random <= 1) {
             random = (uint32_t) (osaka1_length * (rand() / (RAND_MAX + 1.0))) + 1;

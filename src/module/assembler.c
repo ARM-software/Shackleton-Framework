@@ -106,6 +106,14 @@ void assembler_randomizeobject(object_assembler_str *o) {
 
 }
 
+// NOTE: still random
+void assembler_setobject(object_assembler_str *o, char* pass) {
+
+    int new_instr = (int) (MAXINSTRUCTIONS * (rand() / (RAND_MAX + 1.0)));
+    ASSEMBLER_INSTRUCTION(o) = new_instr;
+
+}
+
 void assembler_printobject(object_assembler_str *o)    {
 
     printf("instr : %s", assembler_instruction_string(ASSEMBLER_INSTRUCTION(o)));

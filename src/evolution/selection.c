@@ -168,7 +168,7 @@ bool selection_compare_fitness(double fitness1, double fitness2, osaka_object_ty
  *
  */
 
-uint32_t selection_tournament(node_str** population, double* fitness_values_all, node_str* result, uint32_t pop_size, uint32_t tournament_size, bool vis, char* file) {
+uint32_t selection_tournament(node_str** population, double* fitness_values_all, node_str* result, uint32_t pop_size, uint32_t tournament_size, bool vis) {
 
     // Tournament selection with replacement, individuals can
     // be chosen more than once for the tournament selection process
@@ -178,8 +178,7 @@ uint32_t selection_tournament(node_str** population, double* fitness_values_all,
         printf("Choosing using the basic tournament selection method ---------------------------------\n\n");
 
     }
-
-    uint32_t fitness_values[tournament_size];
+    double fitness_values[tournament_size];
     uint32_t fitness_indices[tournament_size];
     double max_fitness = 0;
     uint32_t max_fitness_ind = -1;
@@ -212,9 +211,8 @@ uint32_t selection_tournament(node_str** population, double* fitness_values_all,
     }
 
     for (uint32_t c = 0; c < tournament_size; c++) {
-
         fitness_values[c] = fitness_values_all[fitness_indices[c]];
-
+        //printf("individual #%d is in the tournament, its fitness is: %lf\n", fitness_indices[c], fitness_values[c]);
         // update which is the current best out of those chosen thus far
         if (selection_compare_fitness(fitness_values[c], max_fitness, type)) {
             max_fitness = fitness_values[c];
@@ -223,12 +221,14 @@ uint32_t selection_tournament(node_str** population, double* fitness_values_all,
 
     }
 
+    //printf("Individual chosen was number %d in the population -------------------------------------\n\n", max_fitness_ind);   
+
+
     if (vis) {
 
         printf("Individual chosen was number %d in the population -------------------------------------\n\n", max_fitness_ind);   
 
     }
-
     result = population[max_fitness_ind];
     return max_fitness_ind;
 

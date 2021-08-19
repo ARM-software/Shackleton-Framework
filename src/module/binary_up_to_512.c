@@ -114,6 +114,18 @@ void binary_up_to_512_randomizeobject(object_binary_up_to_512_str *o) {
 
 }
 
+// NOTE: still random
+void binary_up_to_512_setobject(object_binary_up_to_512_str *o, char* pass) {
+
+	BINARY_UP_TO_512_NUMBER_MY_NUMBER(o) = rand() / (RAND_MAX + 1.0);
+
+	uint32_t num_valid_values1 = BINARY_UP_TO_512_BINARY_NUM_VALID_VALUES(o);
+	uint32_t new_index1 = (uint32_t) (num_valid_values1 * (rand() / (RAND_MAX + 1.0)));
+	BINARY_UP_TO_512_BINARY_MY_BINARY_INDEX(o) = new_index1;
+	BINARY_UP_TO_512_BINARY_MY_BINARY(o) = BINARY_UP_TO_512_BINARY_VALID_VALUES(o)[new_index1];
+
+}
+
 void binary_up_to_512_printobject(object_binary_up_to_512_str *o) {
 
 	printf("MY_NUMBER : %d ; ", BINARY_UP_TO_512_NUMBER_MY_NUMBER(o));

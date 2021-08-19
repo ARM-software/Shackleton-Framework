@@ -316,3 +316,45 @@ void visualization_print_individual_concise_details_from_nth_to_mth(node_str* in
     }
 
 }
+
+void vis_print_parents(bool vis, node_str** offsprings) {
+    //if vis, print out contestant information
+    if (vis) {
+        printf("Contestant 1 starts at node %d\n", UID(offsprings[0]));
+        visualization_print_individual_concise_details(offsprings[0]);
+        printf("\n\nContestant 2 starts at node %d\n\n", UID(offsprings[1]));
+        visualization_print_individual_concise_details(offsprings[1]);
+        printf("\n");
+    }
+}
+
+void vis_best_node(bool vis, node_str* final_node) {
+    if (vis) {
+        printf("Best node: ---------------------------------------------------------------------------\n\n");
+        visualization_print_individual_concise_details(final_node);
+        printf("\n\n--------------------------------------------------------------------------------------\n\n");
+    }
+}
+
+void vis_print_gen(bool vis, bool end_of_gen, node_str** current_generation, uint32_t gen_idx, uint32_t pop_size) {
+    if (!vis) {
+        return;
+    }
+    char msg[200];
+    for (int i = 0; i < pop_size; i++) {
+        if (end_of_gen) {
+            sprintf(msg, "------------------- Printing Individual %d at end of Generation %d --------------------\n\n", i + 1, gen_idx + 1);
+        } else {
+            sprintf(msg, "----------------------- Printing Individual %d before beginning -----------------------\n\n", i + 1);
+        }
+        printf("%s", msg);
+        visualization_print_individual_concise_details(current_generation[i]);
+        printf("\n\n");
+    }
+}
+
+void vis_itr(bool vis, int it, int gen) {
+    if (vis) {
+        printf("---------------------------- Iteration %d of Generation %d ----------------------------\n", it + 1, gen + 1);
+    }
+}
