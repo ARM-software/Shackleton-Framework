@@ -1,0 +1,18 @@
+# YAML 1.2
+---
+authors: 
+  -
+    family-names: Peeler
+    given-names: Hannah
+  -
+    family-names: Li
+    given-names: Stella
+  -
+    family-names: Sloss
+    given-names: Andrew
+cff-version: "1.1.0"
+date-released: 2021-08-18
+message: "If you use this software, please cite it using these metadata."
+title: "Shackleton Framework"
+version: "2.0.0"
+...
