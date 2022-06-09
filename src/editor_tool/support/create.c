@@ -1815,6 +1815,7 @@ void create_h_file(char* name, cJSON* params_json) {
 
 void create_new_module(char* name, char* params_json) {
 
+
     cJSON *json = getJSON(params_json);
 
     //cJSON_Print(json);

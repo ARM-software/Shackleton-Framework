@@ -3,3 +3,9 @@ vgcore.*
 
 # Ignore vscode config files
 .vscode/
+
+# outputs (mostly csv files)
+*cache*
+*junk_output*
+*params*
+exp/*

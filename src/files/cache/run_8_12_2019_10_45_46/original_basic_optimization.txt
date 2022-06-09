@@ -1,5 +1,0 @@
-Description for original file with only basic optimization applied
-
-The fitness of the individual is the time it takes to complete the testing script provided in seconds. Lower fitness is better.
-
-Fitness of this individual: 0.252509 sec

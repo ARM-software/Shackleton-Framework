@@ -1,7 +1,8 @@
 #include "indivdata.h"
 
-DataNode* node_new_allele(node_str* seq, int id) {
+DataNode* node_new_allele(node_str* seq, int id, osaka_object_typ ot) {
     DataNode* d = malloc(sizeof(DataNode));
+    d->osaka_type = ot;
     d->seq = osaka_copylist(seq);
     d->seq_len = osaka_listlength(seq);
     d->seq_id = id;
@@ -97,20 +98,20 @@ double node_update_fitness(DataNode* d, bool fitness_with_var) {
     return d->fitness;
 }
 
-void node_add_group(node_str** gen, int* current_gen_id, uint32_t group_size, int* max_id_ptr, int* hash_cap_ptr, DataNode*** all_indiv_ptr) {
+void node_add_group(node_str** gen, int* current_gen_id, uint32_t group_size, int* max_id_ptr, int* hash_cap_ptr, DataNode*** all_indiv_ptr, osaka_object_typ ot) {
     //printf("\ninside node_add_group, max_id=%d\n", *max_id_ptr);
     for (int g = 0; g < group_size; g++) {
-        int new_allele_id = node_add(gen[g], max_id_ptr, hash_cap_ptr, all_indiv_ptr);
+        int new_allele_id = node_add(gen[g], max_id_ptr, hash_cap_ptr, all_indiv_ptr, ot);
         current_gen_id[g] = new_allele_id;
     }
 }
 
-int node_add(node_str* sequence, int* max_id_ptr, int* hash_cap_ptr, DataNode*** all_indiv_ptr) {
+int node_add(node_str* sequence, int* max_id_ptr, int* hash_cap_ptr, DataNode*** all_indiv_ptr, osaka_object_typ ot) {
     //printf("before node_find,  max_id=%d\n", *max_id_ptr);
     int new_allele_id = node_find(*all_indiv_ptr, *max_id_ptr, sequence);
     if (new_allele_id < 0) {
         new_allele_id = (*max_id_ptr)++;
-        node_add_indiv(sequence, new_allele_id, hash_cap_ptr, all_indiv_ptr);
+        node_add_indiv(sequence, new_allele_id, hash_cap_ptr, all_indiv_ptr, ot);
         //printf("node added to all_indiv at position %d\n", new_allele_id);
     }
     return new_allele_id;
@@ -141,8 +142,8 @@ bool node_match(DataNode* d, node_str* sequence) {
     return d->seq? osaka_compare(d->seq, sequence) : false;
 }
 
-void node_add_indiv(node_str* sequence, int new_indiv_id, int* hash_cap_ptr, DataNode*** all_indiv_ptr) {
-    DataNode* new_indiv = node_new_allele(sequence, new_indiv_id);
+void node_add_indiv(node_str* sequence, int new_indiv_id, int* hash_cap_ptr, DataNode*** all_indiv_ptr, osaka_object_typ ot) {
+    DataNode* new_indiv = node_new_allele(sequence, new_indiv_id, ot);
     node_check_overflow_array(new_indiv_id, hash_cap_ptr, all_indiv_ptr);
     (*all_indiv_ptr)[new_indiv_id] = new_indiv;
 }
@@ -165,6 +166,7 @@ bool node_reeval_by_chance(DataNode* d, int gen) {
     if (d->num_eval == 0) {
         return true;
     }
+    return false;
     for (int i = 0; i < d->num_eval; i++) {
         if (gen+1 == d->gens[i]) {
             return false;
@@ -222,13 +224,24 @@ void node_cache_llvm_pass(char* file_name, node_str* indiv, double fitness, int 
     strcat(string, desc);
     strcat(string, "\n\nThe fitness of the individual is the time it takes to complete the testing script provided in seconds after the specified optimization passes are applied. Lower fitness is better.\n\nFitness of this individual: ");
     strcat(string, fitness_num);
-    strcat(string, " sec");
+    strcat(string, " sec\n\n");
+
+    int len = 0;
+    char* opt_seq_str = gen_seq_str(indiv, &len);
+    strcat(string, opt_seq_str);
+
+    char buffer[100];
+    sprintf(buffer, "\n\nopt sequence has %d passes\n", len);
+
+    strcat(string, buffer);
+
     
     FILE* file_ptr = fopen(file_name, "w+");
     fputs(string, file_ptr);
     //fclose(input);
     //fclose(output);
     fclose(file_ptr);
+    free(opt_seq_str);
 }
 
 void node_cache_best(bool cache, char* main_folder, uint32_t gen, uint32_t pop_size, node_str** current_gen, double* fitness_values, int* current_gen_id, double* track_fitness) {

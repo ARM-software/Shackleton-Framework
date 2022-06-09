@@ -32,20 +32,20 @@ int M[n][3] = {
  
 // Driver method
 int main() {
-    printf("\n");
+    //printf("\n");
     for (int i = 0; i < n; i++) {
         int c = add(T[i][0], T[i][1]);
-        printf("%d + %d = %d?\n", T[i][0], T[i][1], c);
+        //printf("%d + %d = %d?\n", T[i][0], T[i][1], c);
         if (c != T[i][2]) {
             exit(1);
         }
     }
     for (int i = 0; i < m; i++) {
         int c = mult(M[i][0], M[i][1]);
-        printf("%d * %d = %d?\n", M[i][0], M[i][1], c);
+        //printf("%d * %d = %d?\n", M[i][0], M[i][1], c);
         if (c != M[i][2]) {
             exit(1);
         }
     }
-    printf("\n");
+    //printf("\n");
 }

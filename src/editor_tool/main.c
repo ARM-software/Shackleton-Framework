@@ -55,7 +55,7 @@ uint32_t main(uint32_t argc, char* argv[]) {
     strcat(filename, ".json");
 
     printf("\nName for the file being used is %s\n", name);
-    printf("\nThe json file being used is %s", filename);
+    printf("\nThe json file being used is %s\n", filename);
 
     // all actual computation is done here
     create_new_module(name, filename);

@@ -112,6 +112,20 @@ object_functions_str object_table_function[] =  {
         //binary_up_to_512_compareobject,
         NULL,
 	},
+	{
+		5,
+		"GI_LLVM_PASS",
+		gi_llvm_pass_createobject,
+		gi_llvm_pass_randomizeobject,
+        gi_llvm_pass_setobject,
+		gi_llvm_pass_deleteobject,
+		gi_llvm_pass_printobject,
+		gi_llvm_pass_writeobject,
+		gi_llvm_pass_readobject,
+		gi_llvm_pass_copyobject,
+        gi_llvm_pass_describeobject,  // will be used in cache update, WIP
+        gi_llvm_pass_compareobject,
+	},
     {
         -1,
         "TERMINATOR",
@@ -128,4 +142,4 @@ object_functions_str object_table_function[] =  {
     }
 };
 
-uint32_t MAXTYPE=5;
+uint32_t MAXTYPE=6;

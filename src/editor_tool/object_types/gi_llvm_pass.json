@@ -1,0 +1,36 @@
+{    
+    "object": {
+        "name": "gi_llvm_pass"
+    },
+    "params": [
+        {
+            "name": "patch_type",
+            "type": "char*",
+            "macro_name": "my_patch_type",
+            "has_valid_values" : "true",
+            "values" : [
+                {
+                    "value": "insertion"
+                },
+                {
+                    "value": "deletion"
+                },
+                {
+                    "value": "replacement"
+                }
+            ]
+        },
+        {
+            "name": "location",
+            "type": "uint32_t",
+            "macro_name": "my_location",
+            "has_valid_values" : "false"
+        },
+        {
+            "name": "new_pass",
+            "type": "char*",
+            "macro_name": "my_new_pass",
+            "has_valid_values" : "false"
+        }
+    ]
+}

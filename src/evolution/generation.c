@@ -123,7 +123,7 @@ node_str* generate_new_individual(uint32_t individual_size, osaka_object_typ osa
 }
 
 node_str** generate_level_passes(const int num_levels, osaka_object_typ osaka_type) {
-    if (osaka_type != 3) {
+    if (osaka_type != 3 && osaka_type != 5) {
         printf("Function not allowed in the current object type, returning NULL\n");
         return NULL;
     }

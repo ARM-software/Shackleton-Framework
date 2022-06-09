@@ -39,6 +39,7 @@
 #include "osaka_string.h"
 #include "llvm_pass.h"
 #include "binary_up_to_512.h"
+#include "gi_llvm_pass.h"
 
 /*
  * DATATYPE

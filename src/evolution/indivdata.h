@@ -9,10 +9,12 @@
 #include "../support/visualization.h"
 #include "../support/utility.h"
 #include "generation.h"
+#include "optsequence.h"
 
 
 typedef struct DataNode {
     struct node_str *seq;   //Osaka pass sequence
+    uint32_t osaka_type;    //Osaka type
     int seq_len;            //Length of the Osaka structure
     int seq_id;             //Unique ID for the individual, starting at 0
     double fitness;         //Fitness for the individual
@@ -26,7 +28,7 @@ typedef struct DataNode {
     int capacity;           //Counter variable for allocating space for arrays
 } DataNode;
 
-DataNode* node_new_allele(node_str* seq, int id);
+DataNode* node_new_allele(node_str* seq, int id, osaka_object_typ ot);
 double node_record_data(DataNode* d, node_str* sequence, double* all_runtime, double avg_runtime, int success_runs, int gen, bool fitness_with_var);
 void node_check_overflow(DataNode* d);
 bool node_match(DataNode* d, node_str* sequence);
@@ -34,10 +36,10 @@ int node_find(DataNode** all_indiv, int max_id, node_str* sequence);
 void node_increment_gen(DataNode* d);
 void node_log(char* main_folder, char* file, DataNode* d);
 void node_print(DataNode* d, int id);
-void node_add_new_generation(node_str** gen, uint32_t population_size, int* gen_id, int* max_id, int* hash_cap, DataNode*** all_indiv_ptr);
-void node_add_group(node_str** gen, int* current_gen_id, uint32_t group_size, int* max_id_ptr, int* hash_cap_ptr, DataNode*** all_indiv_ptr);
-int node_add(node_str* sequence, int* max_id_ptr, int* hash_cap_ptr, DataNode*** all_indiv_ptr);
-void node_add_indiv(node_str* sequence, int new_indiv_id, int* hash_cap_ptr, DataNode*** all_indiv_ptr);
+void node_add_new_generation(node_str** gen, uint32_t population_size, int* gen_id, int* max_id, int* hash_cap, DataNode*** all_indiv_ptr, osaka_object_typ ot);
+void node_add_group(node_str** gen, int* current_gen_id, uint32_t group_size, int* max_id_ptr, int* hash_cap_ptr, DataNode*** all_indiv_ptr, osaka_object_typ ot);
+int node_add(node_str* sequence, int* max_id_ptr, int* hash_cap_ptr, DataNode*** all_indiv_ptr, osaka_object_typ ot);
+void node_add_indiv(node_str* sequence, int new_indiv_id, int* hash_cap_ptr, DataNode*** all_indiv_ptr, osaka_object_typ ot);
 int node_find_by_id(DataNode*** all_indiv_ptr, int* hash_cap_ptr, node_str* sequence, int new_indiv_id);
 void node_check_overflow_array(int new_indiv_id, int* hash_cap_ptr, DataNode*** all_indiv_ptr);
 double node_calculate_var(double* all_runtime, double avg_runtime, int success_runs);

@@ -532,7 +532,7 @@ void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_
                 //printf(" = %d\n", *tourn_size);
             }
             else if (strcmp(temp, "visualization:") == 0) {
-                printf("\tsetting visualization from file - %s",line);
+                //printf("\tsetting visualization from file - %s",line);
                 temp = strtok(NULL, delim);
                 if (strcmp(temp, "true") == 0) {
                     *vis = true;
@@ -543,6 +543,14 @@ void set_params_from_file(uint32_t *num_gen, uint32_t *pop_size, uint32_t *perc_
                     printf(" = false\n");
                 }
             }
+            /*else if (strcmp(temp, "osaka_type:") == 0) {
+                //printf("\tsetting osaka data type from file - %s",line);
+                temp = strtok(NULL, delim);
+                temp[strlen(temp) - 1] = '\0';
+                str2int(ot, temp, 10);
+                ot = (osaka_object_typ) ot;
+                //printf(" = %d\n", *tourn_size);
+            }*/
             else {
                 temp = strtok(NULL, delim);
             }

@@ -68,7 +68,8 @@ typedef enum    {
     ASSEMBLER = 1,
     OSAKA_STRING = 2,
     LLVM_PASS = 3,
-	BINARY_UP_TO_512 = 4
+	BINARY_UP_TO_512 = 4,
+	GI_LLVM_PASS = 5
 } osaka_object_typ;
 
 typedef enum    {

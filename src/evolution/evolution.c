@@ -302,7 +302,7 @@ void create_randoms(int num_elites, int num_new_random, int* max_id_ptr, node_st
     node_str* new_seq;
     for (uint32_t p = num_elites; p < num_elites + num_new_random; p++) {
         new_seq = generate_new_individual(indiv_size,ot);
-        new_allele_id = node_add(new_seq, max_id_ptr, hash_cap_ptr, all_indiv_ptr);
+        new_allele_id = node_add(new_seq, max_id_ptr, hash_cap_ptr, all_indiv_ptr, ot);
         //fitness_top(offsprings[i], vis, test_file, src_files, num_src_files, false, NULL, cache_id, (*all_indiv_ptr)[ofs_id[i]], num_runs, g, fitness_with_var);
         
         // free individuals from current population to make room for elite individuals
@@ -344,7 +344,7 @@ void select_parents(uint32_t* contestant1_ind, uint32_t* contestant2_ind, node_s
     //printf("Done selecting parents, contestant1_ind=%d, contestant2_ind=%d\n", c1, c2);
 }
 
-void generate_offspring(int parent1_ind, int parent2_ind, node_str** copy_gen, int* copy_gen_id, int num_offspring, node_str** offsprings, bool* ofs_change, int* ofs_id, uint32_t cross_perc, uint32_t mut_perc, bool vis, int* max_id_ptr, int* hash_cap_ptr, DataNode*** all_indiv_ptr) {
+void generate_offspring(int parent1_ind, int parent2_ind, node_str** copy_gen, int* copy_gen_id, int num_offspring, node_str** offsprings, bool* ofs_change, int* ofs_id, uint32_t cross_perc, uint32_t mut_perc, bool vis, int* max_id_ptr, int* hash_cap_ptr, DataNode*** all_indiv_ptr, osaka_object_typ ot) {
     for (int i = 0; i < num_offspring; i++) {
         ofs_change[i] = false;
         //printf("offspring #%d\n", i);
@@ -356,7 +356,7 @@ void generate_offspring(int parent1_ind, int parent2_ind, node_str** copy_gen, i
                 bool temp_change;
                 genetic_operators(temp, offsprings[i], &temp_change, &ofs_change[i], cross_perc, mut_perc, vis);
                 if (ofs_change[i]) {
-                    ofs_id[i] = node_add(offsprings[i], max_id_ptr, hash_cap_ptr, all_indiv_ptr);
+                    ofs_id[i] = node_add(offsprings[i], max_id_ptr, hash_cap_ptr, all_indiv_ptr, ot);
                 }
                 generate_free_individual(temp);
             }
@@ -368,10 +368,10 @@ void generate_offspring(int parent1_ind, int parent2_ind, node_str** copy_gen, i
                 genetic_operators(offsprings[i-1], offsprings[i], &ofs_change[i-1], &ofs_change[i], cross_perc, mut_perc, vis);
                 //printf("ofs_change[%d]=%s, ofs_change[%d]=%s\n", i-1, ofs_change[i-1]?"true":"false", i, ofs_change[i]?"true":"false");
                 if (ofs_change[i-1]) {
-                    ofs_id[i-1] = node_add(offsprings[i-1], max_id_ptr, hash_cap_ptr, all_indiv_ptr);
+                    ofs_id[i-1] = node_add(offsprings[i-1], max_id_ptr, hash_cap_ptr, all_indiv_ptr, ot);
                 }
                 if (ofs_change[i]) {
-                    ofs_id[i] = node_add(offsprings[i], max_id_ptr, hash_cap_ptr, all_indiv_ptr);
+                    ofs_id[i] = node_add(offsprings[i], max_id_ptr, hash_cap_ptr, all_indiv_ptr, ot);
                 }
             }
         }
@@ -482,7 +482,7 @@ void create_mutants(node_str** copy_gen, node_str** current_generation, double* 
                         uint32_t num_elites, uint32_t num_new_random, uint32_t copy_size, \
                         uint32_t num_runs, uint32_t num_offspring, \
                         char* file, char** src_files, uint32_t num_src_files, \
-                        bool vis, int g, \
+                        bool vis, int g, osaka_object_typ ot,\
                         bool cache, char* cache_file, const char* cache_id, \
                         DataNode*** all_indiv_ptr, int* hash_cap_ptr, bool fitness_with_var) {
     uint32_t contestant1_ind = 0;
@@ -507,7 +507,7 @@ void create_mutants(node_str** copy_gen, node_str** current_generation, double* 
                                 copy_gen, copy_gen_id, \
                                 num_offspring, offsprings, ofs_change, ofs_id, \
                                 cross_perc, mut_perc, vis, 
-                                max_id_ptr, hash_cap_ptr, all_indiv_ptr);
+                                max_id_ptr, hash_cap_ptr, all_indiv_ptr, ot);
         //printf("after generate_offspring\n");
         vis_print_parents(vis, offsprings);
         //printf("before select_offspring\n");
@@ -622,7 +622,9 @@ int evolution_clean_up(int num_elites, node_str** current_generation, uint32_t p
     free_all_nodes(all_indiv, max_id);
     free(all_indiv);
     generate_free_generation(current_generation, pop_size);
-    llvm_clean_up(file, cache_id, cache);
+    if (ot == 3) {
+        llvm_clean_up(file, cache_id, cache);
+    }
     generate_free_individual(final_node);
     return g;
 }
@@ -667,7 +669,7 @@ int evolution_clean_up(int num_elites, node_str** current_generation, uint32_t p
  *
  */
 
-int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, uint32_t elite_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache, double *track_fitness, const char *cache_id, const char** levels, const int num_levels) {
+int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, uint32_t pop_size, uint32_t indiv_size, uint32_t tourn_size, uint32_t mut_perc, uint32_t cross_perc, uint32_t elite_perc, osaka_object_typ ot, bool vis, char* file, char** src_files, uint32_t num_src_files, bool cache, double *track_fitness, const char *cache_id, const char** levels, const int num_levels, bool gi) {
     if (vis) {
         printf("Performing basic tournament/crossover/mutation evolution with replacement --------\n\n");
     }
@@ -707,16 +709,14 @@ int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, u
     int num_offspring = 6;  // HAS TO BE GREATER THAN 2: 2 offsprings will be identical to parents, and num_offspring-2 new individuals
     uint32_t num_runs = 40;
     bool fitness_with_var = false;
-    bool gi = true;  // if true, half of the population will be some variation of the default levels, only works when indiv_size is random
 
     cache_create_new_run_folder(cache, main_folder, cache_id);
     cache_params(cache, main_folder, num_gens, pop_size, cross_perc, mut_perc, elite_perc, tourn_size);
     fitness_pre_cache(main_folder, file, src_files, num_src_files, ot, cache, track_fitness, cache_id, num_runs, fitness_with_var, levels, num_levels);
 
     // create the initial population
-    
     generate_new_generation(current_generation, pop_size, indiv_size, ot, gi, levels, num_levels);
-    node_add_group(current_generation, current_gen_id, pop_size, &max_id, &hash_cap, &all_indiv);
+    node_add_group(current_generation, current_gen_id, pop_size, &max_id, &hash_cap, &all_indiv, ot);
     for (int i = 0; i < pop_size; i++) {
         printf("%s%d%s", i==0? "current_gen_id=[":"", current_gen_id[i], i==pop_size-1?"]\n":", ");
     }
@@ -776,7 +776,7 @@ int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, u
                         num_elites, num_new_random, pop_size, \
                         num_runs, num_offspring, \
                         file, src_files, num_src_files, \
-                        vis, g, \
+                        vis, g, ot,\
                         cache, cache_file, cache_id, \
                         &all_indiv, &hash_cap, fitness_with_var);
         //printf("after create_mutants\n");
@@ -793,9 +793,11 @@ int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, u
 
         // refresh fitness values for the current_generation
         for (uint32_t k = 0; k < pop_size; k++) {
-            //printf("-------------------------------------------------------------------------------\n");
-            //printf("Refresh fitness for individual %d of %d in generation %d of %d, ID=%d (max_id=%d)\n", k+1, pop_size, g+1, num_gens, current_gen_id[k], max_id);
-            //printf("-------------------------------------------------------------------------------\n");
+            /*
+            printf("-------------------------------------------------------------------------------\n");
+            printf("Refresh fitness for individual %d of %d in generation %d of %d, ID=%d (max_id=%d)\n", k+1, pop_size, g+1, num_gens, current_gen_id[k], max_id);
+            printf("-------------------------------------------------------------------------------\n");
+            */
             cache_file_name(cache, main_folder, cache_file, g, k);
             indiv_data = all_indiv[current_gen_id[k]];
             fitness_values[k] = fitness_top(current_generation[k], vis, file, src_files, num_src_files, cache, cache_file, cache_id, indiv_data, num_runs, g, fitness_with_var); // Added 6/18/2021
@@ -822,6 +824,10 @@ int evolution_basic_crossover_and_mutation_with_replacement(uint32_t num_gens, u
                                         ot, fitness_values, current_gen_id);
         }
     }
+    //TODO: FIX THIS
+    /*double temp_track[num_levels];
+    fitness_redo_basic(main_folder, file, cache, temp_track, cache_id, num_runs, fitness_with_var, levels, num_levels);
+    char test_compare[200];*/
 
     return evolution_clean_up(num_elites, current_generation, pop_size, \
                                 vis, main_folder, file, cache_id, cache, \

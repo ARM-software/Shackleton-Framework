@@ -40,7 +40,9 @@
 #include "../support/llvm.h"
 #include <stdbool.h>
 #include "sys/time.h"
+#include <time.h>
 #include "indivdata.h"
+#include "optsequence.h"
 #include "../support/cache.h"
 #include "../support/utility.h"
 
@@ -53,6 +55,7 @@ uint32_t (*fpfitness_assembler)(node_str *n, bool vis);
 uint32_t (*fpfitness_osaka_string)(node_str *n, bool vis);
 double (*fpfitness_llvm_pass)(node_str* indiv, char* file, char** src_files, uint32_t num_src_files, bool vis, bool cache, char* cache_file);
 uint32_t (*fpfitness_binary_up_to_512)(node_str *n, bool vis);
+uint32_t (*fpfitness_gi_llvm_pass)(node_str *n, bool vis);
 
 /*
  * ROUTINES
@@ -507,6 +510,102 @@ void fitness_cache_binary_up_to_512(double fitness, node_str* indiv, char* cache
  */
 
 uint32_t fitness_binary_up_to_512(node_str* indiv, bool vis);
+
+/*
+ * NAME
+ *
+ *   fitness_pre_cache_gi_llvm_pass
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes the control values for fitness using LLVM opt
+ *
+ * PARAMETERS
+ *
+ *  char* folder - the main run folder that the control will be saved to
+ *  char* bool - whether or not caching is being used
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (object_type == GI_LLVM_PASS) {
+ *     fitness_pre_cache_gi_llvm_pass(main_folder, test_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_pre_cache_gi_llvm_pass(char* folder, char* test_file, char** src_files, uint32_t num_src_files, bool cache, double* track_fitness, const char *cache_id, uint32_t num_runs, bool fitness_with_var, const char** levels, const int num_levels); //2/12/2022
+
+/*
+ * NAME
+ *
+ *   fitness_cache_gi_llvm_pass
+ *
+ * DESCRIPTION
+ *
+ *  Creates a file that describes an individual along with their fitness
+ *
+ * PARAMETERS
+ *
+ *  double fitness - the fitness of the individual in question
+ *  node_str* indiv - the individual that is to be evaluated
+ *  char* cache_file - the file that will hold the outputted information
+ *
+ * RETURN
+ *
+ *  none
+ *
+ * EXAMPLE
+ *
+ * if (cache) {
+ *     fitness_cache_gi_llvm_pass(fit, indiv, cache_file);   
+ * }
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+void fitness_cache_gi_llvm_pass(double fitness, node_str* indiv, char* cache_file);
+
+/*
+ * NAME
+ *
+ *   fitness_gi_llvm_pass
+ *
+ * DESCRIPTION
+ *
+ *  Calculates the fitness value specifically for a GI LLVM PASS
+ *  individual, currently is only a default
+ *
+ * PARAMETERS
+ *
+ *  node_str* indiv - the individual that is to be evaluated
+ *  bool vis - whether or not visualization is enabled
+ *
+ * RETURN
+ *
+ *  uint32_t - the fitness value for indiv
+ *
+ * EXAMPLE
+ *
+ * uint32_t gi_llvm_pass_fit = fitness_gi_llvm_pass(node, true);
+ *
+ * SIDE-EFFECT
+ *
+ * none
+ *
+ */
+
+double fitness_gi_llvm_pass(node_str* indiv, char* file, char** src_files, uint32_t num_src_files, bool vis, bool cache, char* cache_file, const char *cache_id, DataNode* indiv_data, uint32_t num_runs, int gen, bool fitness_with_var);
 
 /*
  * NAME

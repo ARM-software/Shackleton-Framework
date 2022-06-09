@@ -1185,12 +1185,14 @@ bool osaka_compare(node_str *n0, node_str *n1)  {
         if(OBJECT_TYPE(n0)!=OBJECT_TYPE(n1))  { 
             return false;
         }
-        if (OBJECT_TYPE(n0) != 3 && UID(n0)!=UID(n1)) {
+        if (UID(n0)!=UID(n1)) {
             return false;
         }
-        if (OBJECT_TYPE(n0) == 3 && !object_table_function[OBJECT_TYPE(n0)].osaka_compareobject(OBJECT(n0), OBJECT(n1))) {
-            //printf("llvm pass not equal: %s(%d) != %s(%d)\n", PASS(OBJECT(n0)), PASS_INDEX(OBJECT(n0)), PASS(OBJECT(n1)), PASS_INDEX(OBJECT(n1)));
-            return false;
+        if (OBJECT_TYPE(n0) == 3 || OBJECT_TYPE(n0) == 5) {
+            if (!object_table_function[OBJECT_TYPE(n0)].osaka_compareobject(OBJECT(n0), OBJECT(n1))) {
+                //printf("llvm pass not equal: %s(%d) != %s(%d)\n", PASS(OBJECT(n0)), PASS_INDEX(OBJECT(n0)), PASS(OBJECT(n1)), PASS_INDEX(OBJECT(n1)));
+                return false;
+            }
         }
 
         n0=NEXT(n0);
@@ -1497,6 +1499,7 @@ void osaka_print_available_object_types() {
     printf("\t[3] OSAKA_STRING\n");
     printf("\t[4] LLVM_PASS\n");
     printf("\t[5] BINARY_UP_TO_512\n");
+    printf("\t[6] GI_LLVM_PASS\n");
 }
 
 /*
